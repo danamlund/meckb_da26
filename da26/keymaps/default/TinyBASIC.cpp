@@ -7,6 +7,13 @@
 //         Added: MEM, ? (PRINT)
 //         Quirk:  "10 LET A=B+C" is ok "10 LET A = B + C" is not.
 //         Quirk:  INPUT seems broken?
+//
+// v0.03:  2018-07-06  Dan Amlund <danamlund@gmail.com>
+//         Easier to integrate into qmk firmware.
+//         getln now non-blocking
+//         loop() executes one thing at a time so run using 'while (!loop());'
+//         Commented out code that I did not need (so not really a new version)
+//         Fixed compile warning and errors from using gcc
 
 /* More Scott lawrence notes:
 Attached is an updated version of your BASIC that adds a few things:
@@ -273,7 +280,7 @@ static unsigned char relop_tab[] = {
 static unsigned char *stack_limit;
 static unsigned char *program_start;
 static unsigned char *program_end;
-static unsigned char *stack; // Software stack for things that should go on the CPU stack
+/* static unsigned char *stack; // Software stack for things that should go on the CPU stack */
 static unsigned char *variables_begin;
 static unsigned char *current_line;
 static unsigned char *sp;
@@ -292,15 +299,19 @@ static const unsigned char breakmsg[]         = "break!";
 static const unsigned char unimplimentedmsg[] = "Unimplemented";
 static const unsigned char backspacemsg[]     = "\b \b";
 static const unsigned char indentmsg[]        = "    ";
-static const unsigned char sderrormsg[]       = "SD card error.";
-static const unsigned char sdfilemsg[]        = "SD file error.";
-static const unsigned char dirextmsg[]        = "/ (dir)";
+/* static const unsigned char sderrormsg[]       = "SD card error."; */
+/* static const unsigned char sdfilemsg[]        = "SD file error."; */
+/* static const unsigned char dirextmsg[]        = "/ (dir)"; */
 
-static int inchar(void);
-static void outchar(unsigned char c);
+/* int inchar(void); */
+void outchar(unsigned char c);
 static void line_terminator(void);
 static short int expression(void);
-static unsigned char breakcheck(void);
+unsigned char breakcheck(void);
+bool getln_isstarted(void);
+bool getln_isready(void);
+void getln_start(char prompt);
+void getln_consume(void);
 /***************************************************************************/
 static void ignore_blanks(void)
 {
@@ -357,7 +368,7 @@ static void pushb(unsigned char b)
 }
 
 /***************************************************************************/
-static unsigned char popb()
+static unsigned char popb(void)
 {
         unsigned char b;
         b = *sp;
@@ -451,49 +462,49 @@ static unsigned char print_quoted_string(void)
 /***************************************************************************/
 static void printmsg(const unsigned char *msg)
 {
-        printmsgNoNL(msg);
+    printmsgNoNL(msg);
     line_terminator();
 }
 
 /***************************************************************************/
-static void getln(char prompt)
-{
-        outchar(prompt);
-        txtpos = program_end+sizeof(LINENUM);
+/* static void getln(char prompt) */
+/* { */
+/*      outchar(prompt); */
+/*      txtpos = program_end+sizeof(LINENUM); */
 
-        while(1)
-        {
-                char c = inchar();
-                switch(c)
-                {
-                        case NL:
-                                break;
-                        case CR:
-                                line_terminator();
-                                // Terminate all strings with a NL
-                                txtpos[0] = NL;
-                                return;
-                        case CTRLH:
-                                if(txtpos == program_end)
-                                        break;
-                                txtpos--;
-                                printmsg(backspacemsg);
-                                break;
-                        default:
-                                // We need to leave at least one space to allow us to shuffle the line into order
-                                if(txtpos == variables_begin-2)
-                                        outchar(BELL);
-                                else
-                                {
-                                        txtpos[0] = c;
-                                        txtpos++;
-#if ECHO_CHARS
-                                        outchar(c);
-#endif
-                                }
-                }
-        }
-}
+/*      while(1) */
+/*      { */
+/*              char c = inchar(); */
+/*              switch(c) */
+/*              { */
+/*                      case NL: */
+/*                              break; */
+/*                      case CR: */
+/*                                 line_terminator(); */
+/*                              // Terminate all strings with a NL */
+/*                              txtpos[0] = NL; */
+/*                              return; */
+/*                      case CTRLH: */
+/*                              if(txtpos == program_end) */
+/*                                      break; */
+/*                              txtpos--; */
+/*                              printmsg(backspacemsg); */
+/*                              break; */
+/*                      default: */
+/*                              // We need to leave at least one space to allow us to shuffle the line into order */
+/*                              if(txtpos == variables_begin-2) */
+/*                                      outchar(BELL); */
+/*                              else */
+/*                              { */
+/*                                      txtpos[0] = c; */
+/*                                      txtpos++; */
+/* #if ECHO_CHARS */
+/*                                      outchar(c); */
+/* #endif */
+/*                              } */
+/*              } */
+/*      } */
+/* } */
 
 /***************************************************************************/
 static unsigned char *findline(void)
@@ -532,7 +543,7 @@ static void toUppercaseBuffer(void)
 }
 
 /***************************************************************************/
-void printline()
+void printline(void)
 {
         LINENUM line_num;
 
@@ -726,12 +737,10 @@ static short int expression(void)
 }
 
 /***************************************************************************/
-void loop()
-{
-        unsigned char *start;
-        unsigned char *newEnd;
-        unsigned char linelen;
-
+static unsigned char *start;
+static unsigned char *newEnd;
+static unsigned char linelen;
+void init(void) {
         program_start = program;
         program_end = program_start;
         sp = program+sizeof(program);  // Needed for printnum
@@ -741,6 +750,24 @@ void loop()
         printnum(variables_begin-program_end);
         printmsg(memorymsg);
 
+        current_line = 0;
+        sp = program+sizeof(program);
+        printmsg(okmsg);
+}
+
+static bool running = false;
+bool isrunning(void) {
+    return running;
+}
+
+bool loop(void)
+{
+    if (running) {
+        running = false;
+        goto interperateAtTxtpos2;
+    }
+
+    goto prompt;
 warmstart:
         // this signifies that it is running in 'direct' mode.
         current_line = 0;
@@ -748,7 +775,13 @@ warmstart:
         printmsg(okmsg);
 
 prompt:
-        getln('>');
+        if (!getln_isstarted()) {
+            getln_start('>');
+        }
+        if (!getln_isready()) {
+            return true;
+        }
+        getln_consume();
         toUppercaseBuffer();
 
         txtpos = program_end+sizeof(unsigned short);
@@ -900,6 +933,10 @@ direct:
                 goto prompt;
 
 interperateAtTxtpos:
+        running = true;
+        return true;
+
+interperateAtTxtpos2:
         if(breakcheck())
         {
           printmsg(breakmsg);
@@ -933,6 +970,7 @@ interperateAtTxtpos:
                 case KW_LET:
                         goto assignment;
                 case KW_IF:
+                {
                         short int val;
                         expression_error = 0;
                         val = expression();
@@ -941,6 +979,7 @@ interperateAtTxtpos:
                         if(val != 0)
                                 goto interperateAtTxtpos;
                         goto execnextline;
+                }
 
                 case KW_GOTO:
                         expression_error = 0;
@@ -963,8 +1002,8 @@ interperateAtTxtpos:
                 case KW_PRINT:
                 case KW_QMARK:
                         goto print;
-                case KW_POKE:
-                        goto poke;
+                /* case KW_POKE: */
+                /*      goto poke; */
                 case KW_STOP:
                         // This is the easy way to end - set the current line to the end of program attempt to run it
                         if(txtpos[0] != NL)
@@ -973,7 +1012,7 @@ interperateAtTxtpos:
                         goto execline;
                 case KW_BYE:
                         // Leave the basic interperater
-                        return;
+                        return false;
                 case KW_DEFAULT:
                         goto assignment;
                 default:
@@ -1176,36 +1215,36 @@ assignment:
                 *var = value;
         }
         goto run_next_statement;
-poke:
-        {
-                short int value;
-                unsigned char *address;
+/* poke: */
+/*      { */
+/*              short int value; */
+/*              /\* unsigned char *address; *\/ */
 
-                // Work out where to put it
-                expression_error = 0;
-                value = expression();
-                if(expression_error)
-                        goto qwhat;
-                address = (unsigned char *)value;
+/*              // Work out where to put it */
+/*              expression_error = 0; */
+/*              value = expression(); */
+/*              if(expression_error) */
+/*                      goto qwhat; */
+/*              /\* address = (unsigned char *)value; *\/ */
 
-                // check for a comma
-                ignore_blanks();
-                if (*txtpos != ',')
-                        goto qwhat;
-                txtpos++;
-                ignore_blanks();
+/*              // check for a comma */
+/*              ignore_blanks(); */
+/*              if (*txtpos != ',') */
+/*                      goto qwhat; */
+/*              txtpos++; */
+/*              ignore_blanks(); */
 
-                // Now get the value to assign
-                expression_error = 0;
-                value = expression();
-                if(expression_error)
-                        goto qwhat;
-                //printf("Poke %p value %i\n",address, (unsigned char)value);
-                // Check that we are at the end of the statement
-                if(*txtpos != NL && *txtpos != ':')
-                        goto qwhat;
-        }
-        goto run_next_statement;
+/*              // Now get the value to assign */
+/*              expression_error = 0; */
+/*              value = expression(); */
+/*              if(expression_error) */
+/*                      goto qwhat; */
+/*              //printf("Poke %p value %i\n",address, (unsigned char)value); */
+/*              // Check that we are at the end of the statement */
+/*              if(*txtpos != NL && *txtpos != ':') */
+/*                      goto qwhat; */
+/*      } */
+/*      goto run_next_statement; */
 
 list:
         linenum = testnum(); // Retuns 0 if no line found.
@@ -1374,47 +1413,47 @@ save:
 }
 
 // returns 1 if the character is valid in a filename
-static int isValidFnChar( char c )
-{
-  if( c >= '0' && c <= '9' ) return 1; // number
-  if( c >= 'A' && c <= 'Z' ) return 1; // LETTER
-  if( c >= 'a' && c <= 'z' ) return 1; // letter (for completeness)
-  if( c == '_' ) return 1;
-  if( c == '+' ) return 1;
-  if( c == '.' ) return 1;
-  if( c == '~' ) return 1;  // Window~1.txt
+/* static int isValidFnChar( char c ) */
+/* { */
+/*   if( c >= '0' && c <= '9' ) return 1; // number */
+/*   if( c >= 'A' && c <= 'Z' ) return 1; // LETTER */
+/*   if( c >= 'a' && c <= 'z' ) return 1; // letter (for completeness) */
+/*   if( c == '_' ) return 1; */
+/*   if( c == '+' ) return 1; */
+/*   if( c == '.' ) return 1; */
+/*   if( c == '~' ) return 1;  // Window~1.txt */
 
-  return 0;
-}
+/*   return 0; */
+/* } */
 
-static unsigned char * filenameWord(void)
-{
-  // SDL - I wasn't sure if this functionality existed above, so I figured i'd put it here
-  unsigned char * ret = txtpos;
-  expression_error = 0;
+/* static unsigned char * filenameWord(void) */
+/* { */
+/*   // SDL - I wasn't sure if this functionality existed above, so I figured i'd put it here */
+/*   unsigned char * ret = txtpos; */
+/*   expression_error = 0; */
 
-  // make sure there are no quotes or spaces, search for valid characters
-  //while(*txtpos == SPACE || *txtpos == TAB || *txtpos == SQUOTE || *txtpos == DQUOTE ) txtpos++;
-  while( !isValidFnChar( *txtpos )) txtpos++;
-  ret = txtpos;
+/*   // make sure there are no quotes or spaces, search for valid characters */
+/*   //while(*txtpos == SPACE || *txtpos == TAB || *txtpos == SQUOTE || *txtpos == DQUOTE ) txtpos++; */
+/*   while( !isValidFnChar( *txtpos )) txtpos++; */
+/*   ret = txtpos; */
 
-  if( *ret == '\0' ) {
-    expression_error = 1;
-    return ret;
-  }
+/*   if( *ret == '\0' ) { */
+/*     expression_error = 1; */
+/*     return ret; */
+/*   } */
 
-  // now, find the next nonfnchar
-  txtpos++;
-  while( isValidFnChar( *txtpos )) txtpos++;
-  if( txtpos != ret ) *txtpos = '\0';
+/*   // now, find the next nonfnchar */
+/*   txtpos++; */
+/*   while( isValidFnChar( *txtpos )) txtpos++; */
+/*   if( txtpos != ret ) *txtpos = '\0'; */
 
-  // set the error code if we've got no string
-  if( *ret == '\0' ) {
-    expression_error = 1;
-  }
+/*   // set the error code if we've got no string */
+/*   if( *ret == '\0' ) { */
+/*     expression_error = 1; */
+/*   } */
 
-  return ret;
-}
+/*   return ret; */
+/* } */
 
 /***************************************************************************/
 static void line_terminator(void)
@@ -1424,77 +1463,79 @@ static void line_terminator(void)
 }
 
 /***********************************************************/
-void setup()
+void setup(void)
 {
-#if ARDUINO
-        Serial.begin(9600);	// opens serial port, sets data rate to 9600 bps
-#if ENABLE_FILEIO
-        initSD();
-#endif
-#endif
+/* #if ARDUINO */
+/*      Serial.begin(9600);	// opens serial port, sets data rate to 9600 bps */
+/* #if ENABLE_FILEIO */
+/*         initSD(); */
+/* #endif */
+/* #endif */
 }
 
 /***********************************************************/
-static unsigned char breakcheck(void)
-{
-#if ARDUINO
-  if(Serial.available())
-    return Serial.read() == CTRLC;
-  return 0;
-#else
-  if(kbhit())
-    return getch() == CTRLC;
-   else
-     return 0;
-#endif
-}
+/* static unsigned char breakcheck(void) */
+/* { */
+/* #if ARDUINO */
+/*   if(Serial.available()) */
+/*     return Serial.read() == CTRLC; */
+/*   return 0; */
+/* #else */
+/*   if(kbhit()) */
+/*     return getch() == CTRLC; */
+/*    else */
+/*      return 0; */
+/* #endif */
+/*     return 0; */
+/* } */
 /***********************************************************/
-static int inchar()
-{
-#if ARDUINO
-#if ENABLE_FILEIO
-  if( inFromFile ) {
-    // get content from a file until it's empty
-    int v = fp.read();
-    if( v == NL ) v=CR; // file translate
-    if( !fp.available() ) {
-     inFromFile = false;
-     fp.close();
-    }
-    return v;
-  } else {
-#endif
-    while(1)
-    {
-      if(Serial.available())
-        return Serial.read();
-    }
-#if ENABLE_FILEIO
-  }
-#endif
-#else
-        return getchar();
-#endif
-}
+/* static int inchar() */
+/* { */
+/* #if ARDUINO */
+/* #if ENABLE_FILEIO */
+/*   if( inFromFile ) { */
+/*     // get content from a file until it's empty */
+/*     int v = fp.read(); */
+/*     if( v == NL ) v=CR; // file translate */
+/*     if( !fp.available() ) { */
+/*      inFromFile = false; */
+/*      fp.close(); */
+/*     } */
+/*     return v;     */
+/*   } else { */
+/* #endif */
+/*     while(1) */
+/*     { */
+/*       if(Serial.available()) */
+/*         return Serial.read(); */
+/*     } */
+/* #if ENABLE_FILEIO */
+/*   } */
+/* #endif */
+/* #else */
+/*      return getchar(); */
+/* #endif */
+/*     return '.'; */
+/* } */
 
 /***********************************************************/
-static void outchar(unsigned char c)
-{
-#if ARDUINO
-#if ENABLE_FILEIO
-  if( outToFile ) {
-    // output to a file
-    fp.write( c );
-  } else {
-#endif
-    Serial.write(c);
-#if ENABLE_FILEIO
-  }
-#endif
-#else
-        putchar(c);
-#endif
-}
+/* static void outchar(unsigned char c) */
+/* { */
+/* #if ARDUINO */
+/* #if ENABLE_FILEIO */
+/*   if( outToFile ) { */
+/*     // output to a file */
+/*     fp.write( c ); */
+/*   } else { */
+/* #endif */
+/*     Serial.write(c); */
+/* #if ENABLE_FILEIO */
+/*   } */
+/* #endif */
+/* #else */
+/*      putchar(c); */
+/* #endif */
+/* } */
 
 /***********************************************************/
 /* SD Card helpers */
