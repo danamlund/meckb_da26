@@ -1,0 +1,128 @@
+A 26-key keyboard with 3d printed case and [[https://github.com/qmk/qmk_firmware][qmk firmware]]
+
+* Features
+ - 26 keys
+ - Layers within layers
+ - Tetris
+ - Basic
+
+[[file:da26_layout.png]]
+
+[[file:da26_front.jpg]]
+
+[[file:da26_back.jpg]]
+
+* Common key combinations
+ - ALT F4: C (Alt), K (Fn2), J (Fn2B), R (F4)
+ - Ctrl C: Z (Ctrl), C
+ - Ctrl Z: M (Ctrl), Z
+ - Shift Enter: A (Shift), F (Fn1), L (Enter)
+ - AltGr ': N (AltGr), F (Fn1), K (')
+ - Alt Tab: C (Alt), J (Fn1), A (Tab)
+ - Shift Alt Tab: C (Alt), J (Fn1), L (Shift), A (Tab)
+ - Ctrl PgDn: Z (Ctrl), S (Fn3), F (Fn3B), K (PgDn)
+ - C-x C-s: Z (Ctrl), X (x), release X, S (s)
+ - :q!<enter>: A (Shift), F (Fn1), J (;), release, Q (q), release, F (Fn1), L (Enter)
+
+* Tetris
+ - When playing tetris the keyboard is stuck in FN3
+ - Use ijkl keys to move/rotate/drop
+ - Press ESC to quit
+
+* Basic
+ - [[https://en.wikipedia.org/wiki/Tiny_BASIC][Tiny BASIC]]
+ - [[http://hamsterworks.co.nz/mediawiki/index.php/Arduino_Basic][Arduino Basic / Tiny Basic C by Michael Field and Scott Lawrence]]
+   - Simpler sibling of [[https://github.com/BleuLlama/TinyBasicPlus][TinyBasic Plus]]
+ - Press ESC to break out of infinite loops
+ - Type 'bye' to quit
+ - Ignores movement keys except for backspace
+ - Uses US layout
+ - 412 bytes memory
+ - Executes 1 instruction per 100 ms
+ - When typed keys stop working you are out of memory
+ - Type 'mem' to see memory left
+ - ncurses version in tinybasic_test/
+
+* keyboard-layout-editor.com
+ - http://www.keyboard-layout-editor.com
+** All layers in one
+ - [[http://www.keyboard-layout-editor.com/##@@_f:5&w:10&d:true%253B&=https%252F:%252F%252F%252F%252Fgithub.com%252F%252Fdanamlund%252F%252Fmeckb%252F_da26%253B&@_f:3&w:2&h:2%253B&=Q%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EEsc%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF1%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%252F%252F%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E&_w:2&h:2%253B&=W%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF2%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E&_w:2&h:2%253B&=E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E3%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF3%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E&_w:2&h:2%253B&=R%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E4%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF4%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E&_w:2&h:2%253B&=T%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E5%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF5%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253ETetris%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E&_w:2&h:2%253B&=Y%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E6%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF6%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E&_w:2&h:2%253B&=U%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E%255B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E7%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF7%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E&_w:2&h:2%253B&=I%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E%255D%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E8%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF8%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EUp%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EPgUp%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EFn3B%253C%252F%252Ffont%253E&_w:2&h:2%253B&=O%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E%255C%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E9%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF9%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EInsert%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EFn3B%253C%252F%252Ffont%253E&_w:2&h:2%253B&=P%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E%25E2%2586%2590%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkblue%253EDelete%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E0%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF10%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EPrtSc%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkblue%253EFn1B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EFn3B%253C%252F%252Ffont%253E%253B&@_y:1&x:0.5&w:2&h:2%253B&=A%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253ETab%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E%2560%2520~%253C%252F%252Ffont%253E%253Cbr%252F%252F%253EShift%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%253EHold&_w:2&h:2&c=%2523f78888%253B&=S%253Cbr%252F%252F%253EFn3%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EShift%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EFn0%2520Hold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E&_w:2&h:2&c=%252381e685%253B&=D%253Cbr%252F%252F%253EFn2%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkblue%253EFn1B%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EFn0%2520Hold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E&_w:2&h:2&c=%252396abe3%253B&=F%253Cbr%252F%252F%253EFn1%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3B%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EFn0%2520Hold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E&_w:2&h:2&c=%2523cccccc%253B&=G%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253ESpace%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E&_w:2&h:2%253B&=H%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253ESpace%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E&_w:2&h:2&c=%252396abe3%253B&=J%253Cbr%252F%252F%253EFn1%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E%252F%253B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253ELeft%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EHome%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EFn0%2520Hold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EFn3B%253C%252F%252Ffont%253E&_w:2&h:2&c=%252381e685%253B&=K%253Cbr%252F%252F%253EFn2%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E'%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E-%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF11%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EDown%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EPgDn%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EFn0%2520Hold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EFn3B%253C%252F%252Ffont%253E&_w:2&h:2&c=%2523cccccc%253B&=L%253Cbr%252F%252F%253EShift%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EEnter%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253E%252F=%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EF12%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253ERight%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EEnd%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EHold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=green%253EFn2%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkgreen%253EFn2B%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=darkred%253EFn3B%253C%252F%252Ffont%253E%253B&@_y:1&x:1.5&w:2&h:2%253B&=Z%253Cbr%252F%252F%253ECtrl%250A%250AFn0%253Cbr%252F%252F%253EHold&_w:2&h:2%253B&=X%253Cbr%252F%252F%253EWin%250A%250AFn0%253Cbr%252F%252F%253EHold&_w:2&h:2%253B&=C%253Cbr%252F%252F%253EAlt%250A%250AFn0%253Cbr%252F%252F%253EHold&_w:2&h:2%253B&=V%253Cbr%252F%252F%253EAlt%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EMenu%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EHold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E&_w:2&h:2%253B&=B%253Cbr%252F%252F%253EWin%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E,%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EBasic%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EHold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E&_w:2&h:2%253B&=N%253Cbr%252F%252F%253EAltGr%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E.%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EHold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E&_w:2&h:2%253B&=M%253Cbr%252F%252F%253ECtrl%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253E%252F%252F%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EHelp%253C%252F%252Ffont%253E%250A%250AFn0%253Cbr%252F%252F%253EHold%253Cbr%252F%252F%253E%253Cfont%2520color%252F=blue%253EFn1%253C%252F%252Ffont%253E%253Cbr%252F%252F%253E%253Cfont%2520color%252F=red%253EFn3%253C%252F%252Ffont%253E][da26 keyboard-layout-editor.com]]
+#+BEGIN_EXAMPLE
+[{f:5,w:10,d:true},"https://github.com/danamlund/meckb_da26"],
+[{f:3,w:2,h:2},"Q<br/><font color=blue>Esc</font><br/><font color=green>1</font><br/><font color=darkgreen>F1</font>\n\nFn0<br/><font color=blue>Fn1</font>/<font color=red>Fn3</font><br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font>",
+{w:2,h:2},"W<br/><font color=green>2</font><br/><font color=darkgreen>F2</font>\n\nFn0<br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font>",
+{w:2,h:2},"E<br/><font color=green>3</font><br/><font color=darkgreen>F3</font>\n\nFn0<br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font>",
+{w:2,h:2},"R<br/><font color=green>4</font><br/><font color=darkgreen>F4</font>\n\nFn0<br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font>",
+{w:2,h:2},"T<br/><font color=green>5</font><br/><font color=darkgreen>F5</font><br/><font color=red>Tetris</font>\n\nFn0<br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font><br/><font color=red>Fn3</font>",
+{w:2,h:2},"Y<br/><font color=green>6</font><br/><font color=darkgreen>F6</font>\n\nFn0<br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font>",
+{w:2,h:2},"U<br/><font color=blue>[</font><br/><font color=green>7</font><br/><font color=darkgreen>F7</font>\n\nFn0<br/><font color=blue>Fn1</font><br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font>",
+{w:2,h:2},"I<br/><font color=blue>]</font><br/><font color=green>8</font><br/><font color=darkgreen>F8</font><br/><font color=red>Up</font><br/><font color=darkred>PgUp</font>\n\nFn0<br/><font color=blue>Fn1</font><br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font><br/><font color=red>Fn3</font><br/><font color=darkred>Fn3B</font>",
+{w:2,h:2},"O<br/><font color=blue>\\</font><br/><font color=green>9</font><br/><font color=darkgreen>F9</font><br/><font color=darkred>Insert</font>\n\nFn0<br/><font color=blue>Fn1</font><br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font><br/><font color=darkred>Fn3B</font>",
+{w:2,h:2},"P<br/><font color=blue>←</font><br/><font color=darkblue>Delete</font><br/><font color=green>0</font><br/><font color=darkgreen>F10</font><br/><font color=darkred>PrtSc</font>\n\nFn0<br/><font color=blue>Fn1</font><br/><font color=darkblue>Fn1B</font><br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font><br/><font color=darkred>Fn3B</font>"],
+
+[{y:1,x:0.5,w:2,h:2},"A<br/><font color=blue>Tab</font><br/><font color=green>` ~</font><br/>Shift\n\nFn0<br/><font color=blue>Fn1</font><br/><font color=green>Fn2</font><br>Hold",
+{w:2,h:2,c:"#f78888"},"S<br/>Fn3<br/><font color=blue>Shift</font>\n\nFn0<br/>Fn0 Hold<br/><font color=blue>Fn1</font>",
+{w:2,h:2,c:"#81e685"},"D<br/>Fn2<br/><font color=darkblue>Fn1B</font>\n\nFn0<br/>Fn0 Hold<br/><font color=blue>Fn1</font>",
+{w:2,h:2,c:"#96abe3"},"F<br/>Fn1<br/><font color=green>Fn2B</font><br/><font color=red>Fn3B</font>\n\nFn0<br/>Fn0 Hold<br/><font color=green>Fn2</font><br/><font color=red>Fn3</font>",
+{w:2,h:2,c:"#cccccc"},"G<br/><font color=blue>Space</font>\n\nFn0<br/><font color=blue>Fn1</font>",
+{w:2,h:2},"H<br/><font color=blue>Space</font>\n\nFn0<br/><font color=blue>Fn1</font>",
+{w:2,h:2,c:"#96abe3"},"J<br/>Fn1<br/><font color=blue>;</font><br/><font color=green>Fn2B</font><br/><font color=red>Left</font><br/><font color=darkred>Home</font>\n\nFn0<br/>Fn0 Hold<br/><font color=blue>Fn1</font><br/><font color=green>Fn2</font><br/><font color=red>Fn3</font><br/><font color=darkred>Fn3B</font>",
+{w:2,h:2,c:"#81e685"},"K<br/>Fn2<br/><font color=blue>'</font><br/><font color=green>-</font><br/><font color=darkgreen>F11</font><br/><font color=red>Down</font><br/><font color=darkred>PgDn</font>\n\nFn0<br/>Fn0 Hold<br/><font color=blue>Fn1</font><br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font><br/><font color=red>Fn3</font><br/><font color=darkred>Fn3B</font>",
+{w:2,h:2,c:"#cccccc"},"L<br/>Shift<br/><font color=blue>Enter</font><br/><font color=green>=</font><br/><font color=darkgreen>F12</font><br/><font color=red>Right</font><br/><font color=darkred>End</font>\n\nFn0<br/>Hold<br/><font color=blue>Fn1</font><br/><font color=green>Fn2</font><br/><font color=darkgreen>Fn2B</font><br/><font color=red>Fn3</font><br/><font color=darkred>Fn3B</font>"],
+
+[{y:1,x:1.5,w:2,h:2},"Z<br/>Ctrl\n\nFn0<br/>Hold",
+{w:2,h:2},"X<br/>Win\n\nFn0<br/>Hold",
+{w:2,h:2},"C<br/>Alt\n\nFn0<br/>Hold",
+{w:2,h:2},"V<br/>Alt<br/><font color=blue>Menu</font>\n\nFn0<br/>Hold<br/><font color=blue>Fn1</font>",
+{w:2,h:2},"B<br/>Win<br/><font color=blue>,</font><br/><font color=red>Basic</font>\n\nFn0<br/>Hold<br/><font color=blue>Fn1</font><br/><font color=red>Fn3</font>",
+{w:2,h:2},"N<br/>AltGr<br/><font color=blue>.</font>\n\nFn0<br/>Hold<br/><font color=blue>Fn1</font>",
+{w:2,h:2},"M<br/>Ctrl<br/><font color=blue>/</font><br/><font color=red>Help</font>\n\nFn0<br/>Hold<br/><font color=blue>Fn1</font><br/><font color=red>Fn3</font>"]
+#+END_EXAMPLE
+** One per layer
+ - [[http://www.keyboard-layout-editor.com/##@@_f:5&w:10&d:true;&=https/:////github.com//danamlund//meckb/_da26;&@_f:3&w:2.5;&=Tab%2520to%2520activate%250ARelease%2520to%2520activate%250A%250A%250A%250A%250AHold%2520to%2520activate;&@_f:10&w:10&d:true;&=Layer%25200;&@_y:-0.5&f:3;&=Q&=W&=E&=R&=T&=Y&=U&=I&=O&=P;&@_x:0.25;&=A%250A%250A%250A%250A%250A%250AShift&_c=#f78888;&=S%250A%250A%250A%250A%250A%250AFn3&_c=#81e685;&=D%250A%250A%250A%250A%250A%250AFn2&_c=#96abe3;&=F%250A%250A%250A%250A%250A%250AFn1&_c=#cccccc;&=G&=H&_c=#96abe3;&=J%250A%250A%250A%250A%250A%250AFn1&_c=#81e685;&=K%250A%250A%250A%250A%250A%250AFn2&_c=#cccccc;&=L%250A%250A%250A%250A%250A%250AShfit;&@_x:0.75;&=Z%250A%250A%250A%250A%250A%250ACtrl&=X%250A%250A%250A%250A%250A%250AWin&=C%250A%250A%250A%250A%250A%250AAlt&=V%250A%250A%250A%250A%250A%250AAlt&=B%250A%250A%250A%250A%250A%250AWin&=N%250A%250A%250A%250A%250A%250AAltGr&=M%250A%250A%250A%250A%250A%250ACtrl;&@_y:0.5&f:10&w:10&d:true;&=Layer%25201;&@_y:-0.5&c=#96abe3&f:3;&=ESC&_c=#cccccc&a:7;&=&=&=&=&=&_c=#96abe3&a:4;&=%255B&=%255D&=%255C&=%25E2%2586%2590;&@_x:0.25;&=Tab%250A%250A%250A%250A%250A%250AShift&_c=#cccccc&a:6;&=Shift&_c=#735fed;&=Fn1B&_c=#cccccc&a:4;&=%250AFn0&_c=#96abe3;&=Space&=Space&=/;%250AFn0&='&=Enter;&@_x:0.75&c=#cccccc;&=Ctrl&=Win&=Alt&_c=#96abe3;&=Menu&=,&=.%250A%250A%250A%250A%250A%250AAltGr&=//%250A%250A%250A%250A%250A%250ACtrl;&@_y:0.5&f:10&w:10&d:true;&=Layer%25201%2520B;&@_y:-0.5&c=#cccccc&a:7&f:3;&=&=&=&=&=&=&=&=&=&_c=#735fed&a:4;&=Delete;&@_x:0.25&c=#cccccc;&=Shift&_a:7;&=&_c=#96abe3&a:4;&=%250AFn1&_c=#cccccc;&=%250AFn0&_a:7;&=&=&_a:4;&=%250AFn0&_a:7;&=&_a:4;&=Shift;&@_x:0.75;&=Ctrl&=Win&=Alt&_a:7;&=&=&_a:4;&=AltGr&=Ctrl;&@_y:0.5&f:10&w:10&d:true;&=Layer%25202;&@_y:-0.5&c=#81e685&f:3;&=1&=2&=3&=4&=5&=6&=7&=8&=9&=0;&@_x:0.25;&=%2560%250A%250A%250A%250A%250A%250AShift&_c=#cccccc&a:7;&=&_a:4;&=%250AFn0&_c=#64b366&a:6;&=Fn2B&_c=#cccccc&a:7;&=&=&_c=#64b366&a:6;&=Fn2B&_c=#81e685&a:4;&=-%250AFn0&=/=%250A%250A%250A%250A%250A%250AShift;&@_x:0.75&c=#cccccc;&=Ctrl&=Win&=Alt&_a:7;&=&=&_a:4;&=AltGr&=Ctrl;&@_y:0.5&f:10&w:10&d:true;&=Layer%25202%2520B;&@_y:-0.5&c=#64b366&f:3;&=F1&=F2&=F3&=F4&=F5&=F6&=F7&=F8&=F9&=F10;&@_x:0.25&c=#cccccc;&=Shfit&_a:7;&=&_a:4;&=%250AFn0&_c=#81e685;&=%250AFn2&_c=#cccccc&a:7;&=&=&_c=#81e685&a:4;&=%250AFn2&_c=#64b366;&=F11%250AFn0&=F12%250A%250A%250A%250A%250A%250AShift;&@_x:0.75&c=#cccccc;&=Ctrl&=Win&=Alt&_a:7;&=&=&_a:4;&=AltGr&=Ctrl;&@_y:0.5&f:10&w:10&d:true;&=Layer%25203;&@_y:-0.5&c=#f78888&f:3;&=Esc&_c=#cccccc&a:7;&=&=&=&_c=#f78888&a:4;&=Tetris&_c=#cccccc&a:7;&=&=&_c=#f78888&a:4;&=Up&_c=#cccccc&a:7;&=&=;&@_x:0.25&a:4;&=Shift&=%250AFn0&_a:7;&=&_c=#b85353&a:6;&=Fn3B&_c=#cccccc&a:7;&=&=&_c=#f78888&a:4;&=Left&=Down&=Right;&@_x:0.75&c=#cccccc;&=Ctrl&=Win&=Alt&_a:7;&=&_c=#f78888&a:4;&=Basic&_c=#cccccc;&=AltGr&=Ctrl;&@_y:0.5&f:10&w:10&d:true;&=Layer%25203%2520B;&@_y:-0.5&a:7&f:3;&=&=&=&=&=&=&=&_c=#b85353&a:4;&=PgUp&=Insert&=PrtSc;&@_x:0.25&c=#cccccc;&=Shift&=%250AFn0&_a:7;&=&_c=#f78888&a:4;&=%250AFn3&_c=#cccccc&a:7;&=&=&_c=#b85353&a:4;&=Home&=PgDn&=End;&@_x:0.75&c=#cccccc;&=Ctrl&=Win&=Alt&_a:7;&=&=&_a:4;&=AltGr&=Ctrl][da26 keyboard-layout-editor.com]]
+#+BEGIN_EXAMPLE
+[{f:5,w:10,d:true},"https://github.com/danamlund/meckb_da26"],
+[{f:3,w:2.5},"Tab to activate\nRelease to activate\n\n\n\n\nHold to activate"],
+[{f:10,w:10,d:true},"Layer 0"],
+[{y:-0.5,f:3},"Q","W","E","R","T","Y","U","I","O","P"],
+[{x:0.25},"A\n\n\n\n\n\nShift",{c:"#f78888"},"S\n\n\n\n\n\nFn3",{c:"#81e685"},"D\n\n\n\n\n\nFn2",{c:"#96abe3"},"F\n\n\n\n\n\nFn1",{c:"#cccccc"},"G","H",{c:"#96abe3"},"J\n\n\n\n\n\nFn1",{c:"#81e685"},"K\n\n\n\n\n\nFn2",{c:"#cccccc"},"L\n\n\n\n\n\nShfit"],
+[{x:0.75},"Z\n\n\n\n\n\nCtrl","X\n\n\n\n\n\nWin","C\n\n\n\n\n\nAlt","V\n\n\n\n\n\nAlt","B\n\n\n\n\n\nWin","N\n\n\n\n\n\nAltGr","M\n\n\n\n\n\nCtrl"],
+[{y:0.5,f:10,w:10,d:true},"Layer 1"],
+[{y:-0.5,c:"#96abe3",f:3},"ESC",{c:"#cccccc",a:7},"","","","","",{c:"#96abe3",a:4},"[","]","\\","←"],
+[{x:0.25},"Tab\n\n\n\n\n\nShift",{c:"#cccccc",a:6},"Shift",{c:"#735fed"},"Fn1B",{c:"#cccccc",a:4},"\nFn0",{c:"#96abe3"},"Space","Space",";\nFn0","'","Enter"],
+[{x:0.75,c:"#cccccc"},"Ctrl","Win","Alt",{c:"#96abe3"},"Menu",",",".\n\n\n\n\n\nAltGr","/\n\n\n\n\n\nCtrl"],
+[{y:0.5,f:10,w:10,d:true},"Layer 1 B"],
+[{y:-0.5,c:"#cccccc",a:7,f:3},"","","","","","","","","",{c:"#735fed",a:4},"Delete"],
+[{x:0.25,c:"#cccccc"},"Shift",{a:7},"",{c:"#96abe3",a:4},"\nFn1",{c:"#cccccc"},"\nFn0",{a:7},"","",{a:4},"\nFn0",{a:7},"",{a:4},"Shift"],
+[{x:0.75},"Ctrl","Win","Alt",{a:7},"","",{a:4},"AltGr","Ctrl"],
+[{y:0.5,f:10,w:10,d:true},"Layer 2"],
+[{y:-0.5,c:"#81e685",f:3},"1","2","3","4","5","6","7","8","9","0"],
+[{x:0.25},"`\n\n\n\n\n\nShift",{c:"#cccccc",a:7},"",{a:4},"\nFn0",{c:"#64b366",a:6},"Fn2B",{c:"#cccccc",a:7},"","",{c:"#64b366",a:6},"Fn2B",{c:"#81e685",a:4},"-\nFn0","=\n\n\n\n\n\nShift"],
+[{x:0.75,c:"#cccccc"},"Ctrl","Win","Alt",{a:7},"","",{a:4},"AltGr","Ctrl"],
+[{y:0.5,f:10,w:10,d:true},"Layer 2 B"],
+[{y:-0.5,c:"#64b366",f:3},"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"],
+[{x:0.25,c:"#cccccc"},"Shfit",{a:7},"",{a:4},"\nFn0",{c:"#81e685"},"\nFn2",{c:"#cccccc",a:7},"","",{c:"#81e685",a:4},"\nFn2",{c:"#64b366"},"F11\nFn0","F12\n\n\n\n\n\nShift"],
+[{x:0.75,c:"#cccccc"},"Ctrl","Win","Alt",{a:7},"","",{a:4},"AltGr","Ctrl"],
+[{y:0.5,f:10,w:10,d:true},"Layer 3"],
+[{y:-0.5,c:"#f78888",f:3},"Esc",{c:"#cccccc",a:7},"","","",{c:"#f78888",a:4},"Tetris",{c:"#cccccc",a:7},"","",{c:"#f78888",a:4},"Up",{c:"#cccccc",a:7},"",""],
+[{x:0.25,a:4},"Shift","\nFn0",{a:7},"",{c:"#b85353",a:6},"Fn3B",{c:"#cccccc",a:7},"","",{c:"#f78888",a:4},"Left","Down","Right"],
+[{x:0.75,c:"#cccccc"},"Ctrl","Win","Alt",{a:7},"",{c:"#f78888",a:4},"Basic",{c:"#cccccc"},"AltGr","Ctrl"],
+[{y:0.5,f:10,w:10,d:true},"Layer 3 B"],
+[{y:-0.5,a:7,f:3},"","","","","","","",{c:"#b85353",a:4},"PgUp","Insert","PrtSc"],
+[{x:0.25,c:"#cccccc"},"Shift","\nFn0",{a:7},"",{c:"#f78888",a:4},"\nFn3",{c:"#cccccc",a:7},"","",{c:"#b85353",a:4},"Home","PgDn","End"],
+[{x:0.75,c:"#cccccc"},"Ctrl","Win","Alt",{a:7},"","",{a:4},"AltGr","Ctrl"]
+#+END_EXAMPLE
+
+* Components
+ - [[https://www.ebay.com/sch/i.html?_nkw=rainbow+caps+mechanical][Rainbow keycaps]]
+ - [[https://www.ebay.com/sch/i.html?_nkw=green+mechanical+switch+10pcs][Green gateron mechanical switches]]
+ - [[https://www.ebay.com/sch/i.html?_nkw=pro+micro][Pro micro]]
+   - The 3d model is designed for the slim and thin blue boards. But I
+     ran out of those, so I cut the case to fit one of the fat and
+     wide black boards.
+ - [[https://www.ebay.com/sch/i.html?_nkw=single+core+wire+colors&_sop=15][Single core wires]]
+ - [[https://www.ebay.com/sch/i.html?_nkw=in4148+100pcs+-smt&_sop=15][IN4148 diodes]]
+
+* Bugs
+ - QMK firmware "key if tab, other key if hold" does not always know
+   what you are thinking.
