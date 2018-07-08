@@ -127,7 +127,7 @@ char eliminateCompileErrors = 1;
   #endif
 
   // size of our program ram
-  #define kRamSize   412
+  #define kRamSize   1024
 
   // for file writing
   #if ENABLE_FILEIO
@@ -659,6 +659,19 @@ static short int expr3(void)
                                 a /= b;
                         else
                                 expression_error = 1;
+                }
+                else if(*txtpos == '^')
+                {
+                    txtpos++;
+                    b = expr4();
+                    if (b < 0)
+                        a = 0;
+                    else {
+                        short int result = 1;
+                        while (b-- > 0)
+                            result *= a;
+                        a = result;
+                    }
                 }
                 else
                         return a;

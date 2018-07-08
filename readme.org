@@ -37,8 +37,8 @@ A 26-key keyboard with 3d printed case and [[https://github.com/qmk/qmk_firmware
  - Type 'bye' to quit
  - Ignores movement keys except for backspace
  - Uses US layout
- - 412 bytes memory
- - Executes 1 instruction per 100 ms
+ - 1024 bytes memory
+ - Executes 1 instruction per 50 ms
  - When typed keys stop working you are out of memory
  - Type 'mem' to see memory left
  - ncurses version in tinybasic_test/

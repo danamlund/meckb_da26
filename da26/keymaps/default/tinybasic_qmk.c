@@ -46,8 +46,12 @@ bool basic_register_code_user(uint8_t code) {
             if (code == KC_ESC) {
                 dobreak = true;
             }
+            return false;
         }
         if (getln_isstarted() && !getln_isready()) {
+            if (code == KC_LSFT || code == KC_RSFT) {
+                return true;
+            }
             if (code == KC_ENT) {
                 txtpos[0] = NL;
                 getln_ready = true;
@@ -90,7 +94,7 @@ bool basic_register_code_user(uint8_t code) {
 
 void basic_matrix_scan_user(void) {
     if (basic_running) {
-        if (timer_elapsed(timer) > 100) {
+        if (timer_elapsed(timer) > 50) {
             timer = timer_read();
             // execute 1 instruction every 100ms
             // so we notice ESC (break) presses

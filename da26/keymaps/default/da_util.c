@@ -102,7 +102,7 @@ uint16_t ascii_to_keycode(char c) {
         case '*': return LSFT(KC_8);
         case '+': return LSFT(KC_EQL);
         case ',': return KC_COMM;
-        case '-': return LSFT(KC_MINS);
+        case '-': return KC_MINS;
         case '.': return KC_DOT;
         case '/': return KC_SLSH;
         case ':': return LSFT(KC_SCLN);
