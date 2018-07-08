@@ -275,7 +275,7 @@ static unsigned char relop_tab[] = {
 #define RELOP_UNKNOWN	6
 
 #define STACK_SIZE (sizeof(struct stack_for_frame)*5)
-#define VAR_SIZE sizeof(short int) // Size of variables in bytes
+#define VAR_SIZE sizeof(int32_t) // Size of variables in bytes
 
 static unsigned char *stack_limit;
 static unsigned char *program_start;
@@ -303,10 +303,12 @@ static const unsigned char indentmsg[]        = "    ";
 /* static const unsigned char sdfilemsg[]        = "SD file error."; */
 /* static const unsigned char dirextmsg[]        = "/ (dir)"; */
 
+static const unsigned char minvalue[]        = "-2147483648";
+
 /* int inchar(void); */
 void outchar(unsigned char c);
 static void line_terminator(void);
-static short int expression(void);
+static int32_t expression(void);
 unsigned char breakcheck(void);
 bool getln_isstarted(void);
 bool getln_isready(void);
@@ -377,10 +379,15 @@ static unsigned char popb(void)
 }
 
 /***************************************************************************/
-static void printnum(int num)
+static void printmsgNoNL(const unsigned char *msg);
+static void printnum(int32_t num)
 {
         int digits = 0;
 
+        if (num == (int32_t) -2147483648) {
+            printmsgNoNL(minvalue);
+            return;
+        }
         if(num < 0)
         {
                 num = -num;
@@ -563,7 +570,7 @@ void printline(void)
 }
 
 /***************************************************************************/
-static short int expr4(void)
+static int32_t expr4(void)
 {
         if(*txtpos == '0')
         {
@@ -573,7 +580,7 @@ static short int expr4(void)
 
         if(*txtpos >= '1' && *txtpos <= '9')
         {
-                short int a = 0;
+                int32_t a = 0;
                 do      {
                         a = a*10 + *txtpos - '0';
                         txtpos++;
@@ -584,11 +591,11 @@ static short int expr4(void)
         // Is it a function or variable reference?
         if(txtpos[0] >= 'A' && txtpos[0] <= 'Z')
         {
-                short int a;
+                int32_t a;
                 // Is it a variable reference (single alpha)
                 if(txtpos[1] < 'A' || txtpos[1] > 'Z')
                 {
-                        a = ((short int *)variables_begin)[*txtpos - 'A'];
+                        a = ((int32_t *)variables_begin)[*txtpos - 'A'];
                         txtpos++;
                         return a;
                 }
@@ -621,7 +628,7 @@ static short int expr4(void)
 
         if(*txtpos == '(')
         {
-                short int a;
+                int32_t a;
                 txtpos++;
                 a = expression();
                 if(*txtpos != ')')
@@ -638,9 +645,9 @@ expr4_error:
 }
 
 /***************************************************************************/
-static short int expr3(void)
+static int32_t expr3(void)
 {
-        short int a,b;
+        int32_t a,b;
 
         a = expr4();
         while(1)
@@ -667,7 +674,7 @@ static short int expr3(void)
                     if (b < 0)
                         a = 0;
                     else {
-                        short int result = 1;
+                        int32_t result = 1;
                         while (b-- > 0)
                             result *= a;
                         a = result;
@@ -679,9 +686,9 @@ static short int expr3(void)
 }
 
 /***************************************************************************/
-static short int expr2(void)
+static int32_t expr2(void)
 {
-        short int a,b;
+        int32_t a,b;
 
         if(*txtpos == '-' || *txtpos == '+')
                 a = 0;
@@ -707,9 +714,9 @@ static short int expr2(void)
         }
 }
 /***************************************************************************/
-static short int expression(void)
+static int32_t expression(void)
 {
-        short int a,b;
+        int32_t a,b;
 
         a = expr2();
         // Check if we have an error
@@ -984,7 +991,7 @@ interperateAtTxtpos2:
                         goto assignment;
                 case KW_IF:
                 {
-                        short int val;
+                        int32_t val;
                         expression_error = 0;
                         val = expression();
                         if(expression_error || *txtpos == NL)
@@ -1054,7 +1061,7 @@ input:
                 ignore_blanks();
                 if(*txtpos != NL && *txtpos != ':')
                         goto qwhat;
-                ((short int *)variables_begin)[var-'A'] = 99;
+                ((int32_t *)variables_begin)[var-'A'] = 99;
 
                 goto run_next_statement;
         }
@@ -1108,7 +1115,7 @@ forloop:
 
                         sp -= sizeof(struct stack_for_frame);
                         f = (struct stack_for_frame *)sp;
-                        ((short int *)variables_begin)[var-'A'] = initial;
+                        ((int32_t *)variables_begin)[var-'A'] = initial;
                         f->frame_type = STACK_FOR_FLAG;
                         f->for_var = var;
                         f->terminal = terminal;
@@ -1176,7 +1183,7 @@ gosub_return:
                                         // Is the the variable we are looking for?
                                         if(txtpos[-1] == f->for_var)
                                         {
-                                                short int *varaddr = ((short int *)variables_begin) + txtpos[-1] - 'A';
+                                                int32_t *varaddr = ((int32_t *)variables_begin) + txtpos[-1] - 'A';
                                                 *varaddr = *varaddr + f->step;
                                                 // Use a different test depending on the sign of the step increment
                                                 if((f->step > 0 && *varaddr <= f->terminal) || (f->step < 0 && *varaddr >= f->terminal))
@@ -1204,12 +1211,12 @@ gosub_return:
 
 assignment:
         {
-                short int value;
-                short int *var;
+                int32_t value;
+                int32_t *var;
 
                 if(*txtpos < 'A' || *txtpos > 'Z')
                         goto qhow;
-                var = (short int *)variables_begin + *txtpos - 'A';
+                var = (int32_t *)variables_begin + *txtpos - 'A';
                 txtpos++;
 
                 ignore_blanks();
@@ -1296,7 +1303,7 @@ print:
                         goto qwhat;
                 else
                 {
-                        short int e;
+                        int32_t e;
                         expression_error = 0;
                         e = expression();
                         if(expression_error)
