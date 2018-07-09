@@ -19,29 +19,31 @@
 #include "tetris_qmk.h"
 #include "minesweeper_qmk.h"
 
-#define ____ KC_NO
-
 #define PREVENT_STUCK_MODIFIERS
+
+enum my_keycodes {
+  HELP = SAFE_RANGE,
+  TETRIS,
+  BASIC,
+  MINES
+};
+
 
 #define F0_LFN1 1
 #define F0_RFN1 2
 #define F0_LFN2 3
 #define F0_RFN2 4
 #define F0_FN3 5
-#define FTETRIS 6
-#define FHELP 7
-#define FBASIC 8
-#define FMINESWEEPER 9
 
-#define FN1L 1
-#define FN1LB 2
-#define FN1R 3
-#define FN2L 4
-#define FN2R 5
-#define FN2B 6
-#define FN3 7
-#define FN3B 8
-#define FNMINES 9
+#define _1L 1
+#define _1LB 2
+#define _1R 3
+#define _2L 4
+#define _2R 5
+#define _2B 6
+#define _3 7
+#define _3B 8
+#define _MINES 9
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -58,63 +60,59 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     MT(MOD_LSFT, KC_A), F(F0_FN3), F(F0_LFN2), F(F0_LFN1), KC_G, KC_H, F(F0_RFN1), F(F0_RFN2), MT(MOD_RSFT, KC_L), \
       MT(MOD_LCTL, KC_Z), MT(MOD_LGUI, KC_X), MT(MOD_LALT, KC_C), MT(MOD_LALT, KC_V), MT(MOD_RGUI, KC_B), MT(MOD_RALT, KC_N), MT(MOD_RCTL, KC_M) \
 ),
-[FN1L] = LAYOUT(
-  KC_ESC, ____, ____, ____, ____, ____, KC_LBRC, KC_RBRC, KC_BSLS, KC_BSPC, \
-    KC_LSFT, KC_RSFT, MO(FN1LB), KC_TRNS, ____, KC_SPC, KC_SCLN, KC_QUOT, KC_ENT, \
+[_1L] = LAYOUT(
+  KC_ESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC, KC_RBRC, KC_BSLS, KC_BSPC, \
+    KC_LSFT, KC_RSFT, MO(_1LB), KC_TRNS, XXXXXXX, KC_SPC, KC_SCLN, KC_QUOT, KC_ENT, \
       KC_LCTL, KC_LGUI, KC_LALT, KC_APP, KC_COMM, MT(MOD_RALT, KC_DOT), MT(MOD_RCTL, KC_SLSH) \
 ),
-[FN1LB] = LAYOUT(
-  ____, ____, ____, ____, ____, ____, ____, ____, ____, KC_DEL, \
-    KC_LSFT, ____, KC_TRNS, KC_TRNS, ____, ____, KC_TRNS, ____, KC_RSFT, \
-      KC_LCTL, KC_LGUI, KC_LALT, ____, ____, KC_RALT, KC_RCTL \
+[_1LB] = LAYOUT(
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_DEL, \
+    KC_LSFT, XXXXXXX, KC_TRNS, KC_TRNS, XXXXXXX, XXXXXXX, KC_TRNS, XXXXXXX, KC_RSFT, \
+      KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
-[FN1R] = LAYOUT(
-  KC_ESC, ____, ____, ____, ____, ____, ____, ____, ____, ____, \
-    MT(MOD_LSFT, KC_TAB), ____, ____, ____, KC_SPC, ____, KC_TRNS, ____, KC_RSFT, \
-      KC_LCTL, KC_LGUI, KC_LALT, ____, ____, KC_RALT, KC_RCTL \
+[_1R] = LAYOUT(
+  KC_ESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
+    MT(MOD_LSFT, KC_TAB), XXXXXXX, XXXXXXX, XXXXXXX, KC_SPC, XXXXXXX, KC_TRNS, XXXXXXX, KC_RSFT, \
+      KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
-[FN2L] = LAYOUT(
+[_2L] = LAYOUT(
   KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, \
-    MT(MOD_LSFT, KC_GRV), ____, KC_TRNS, MO(FN2B), ____, ____, ____, KC_MINS, MT(MOD_RSFT, KC_EQL), \
-      KC_LCTL, KC_LGUI, KC_LALT, ____, ____, KC_RALT, KC_RCTL \
+    MT(MOD_LSFT, KC_GRV), XXXXXXX, KC_TRNS, MO(_2B), XXXXXXX, XXXXXXX, XXXXXXX, KC_MINS, MT(MOD_RSFT, KC_EQL), \
+      KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
-[FN2R] = LAYOUT(
+[_2R] = LAYOUT(
   KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, \
-    MT(MOD_LSFT, KC_GRV), ____, ____, ____, ____, ____, MO(FN2B), KC_TRNS, MT(MOD_RSFT, KC_EQL), \
-      KC_LCTL, KC_LGUI, KC_LALT, ____, ____, KC_RALT, KC_RCTL \
+    MT(MOD_LSFT, KC_GRV), XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, MO(_2B), KC_TRNS, MT(MOD_RSFT, KC_EQL), \
+      KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
-[FN2B] = LAYOUT(
+[_2B] = LAYOUT(
   KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, \
-    KC_LSFT, ____, KC_TRNS, KC_TRNS, ____, ____, KC_TRNS, KC_F11, MT(MOD_RSFT, KC_F12), \
-      KC_LCTL, KC_LGUI, KC_LALT, ____, ____, KC_RALT, KC_RCTL \
+    KC_LSFT, XXXXXXX, KC_TRNS, KC_TRNS, XXXXXXX, XXXXXXX, KC_TRNS, KC_F11, MT(MOD_RSFT, KC_F12), \
+      KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
-[FN3] = LAYOUT(
-  KC_ESC, ____, ____, ____, F(FTETRIS), ____, F(FHELP), KC_UP, ____, ____, \
-    KC_LSFT, KC_TRNS, ____, MO(FN3B), ____, ____, KC_LEFT, KC_DOWN, KC_RGHT, \
-      KC_LCTL, KC_LGUI, KC_LALT, ____, F(FBASIC), KC_RALT, F(FMINESWEEPER)       \
+[_3] = LAYOUT(
+  KC_ESC, XXXXXXX, XXXXXXX, XXXXXXX, TETRIS, XXXXXXX, HELP, KC_UP, XXXXXXX, XXXXXXX, \
+    KC_LSFT, KC_TRNS, XXXXXXX, MO(_3B), XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, \
+      KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, BASIC, KC_RALT, MINES       \
 ),
-[FN3B] = LAYOUT(
-  ____, ____, ____, ____, ____, ____, ____, KC_PGUP, KC_INS, KC_PSCR, \
-    KC_LSFT, KC_TRNS, ____, KC_TRNS, ____, ____, KC_HOME, KC_PGDN, KC_END, \
-      KC_LCTL, KC_LGUI, KC_LALT, ____, ____, KC_RALT, KC_RCTL \
+[_3B] = LAYOUT(
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_PGUP, KC_INS, KC_PSCR, \
+    KC_LSFT, KC_TRNS, XXXXXXX, KC_TRNS, XXXXXXX, XXXXXXX, KC_HOME, KC_PGDN, KC_END, \
+      KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
-[FNMINES] = LAYOUT(
-    KC_ESC, ____, ____, ____, ____, ____, ____, KC_UP, ____, ____, \
-      ____, ____, KC_D, KC_F, ____, ____, KC_LEFT, KC_DOWN, KC_RGHT, \
-        ____, ____, ____, ____, ____, ____, ____  \
+[_MINES] = LAYOUT(
+    KC_ESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, XXXXXXX, XXXXXXX, \
+      XXXXXXX, XXXXXXX, KC_D, KC_F, XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, \
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  \
 ),
 };
 
 const uint16_t PROGMEM fn_actions[] = {
-  [F0_LFN1] = ACTION_LAYER_TAP_KEY(FN1L, KC_F),
-  [F0_RFN1] = ACTION_LAYER_TAP_KEY(FN1R, KC_J),
-  [F0_LFN2] = ACTION_LAYER_TAP_KEY(FN2L, KC_D),
-  [F0_RFN2] = ACTION_LAYER_TAP_KEY(FN2R, KC_K),
-  [F0_FN3] = ACTION_LAYER_TAP_KEY(FN3, KC_S),
-  [FTETRIS] = ACTION_FUNCTION(FTETRIS),
-  [FHELP] = ACTION_FUNCTION(FHELP),
-  [FBASIC] = ACTION_FUNCTION(FBASIC),
-  [FMINESWEEPER] = ACTION_FUNCTION(FMINESWEEPER),
+  [F0_LFN1] = ACTION_LAYER_TAP_KEY(_1L, KC_F),
+  [F0_RFN1] = ACTION_LAYER_TAP_KEY(_1R, KC_J),
+  [F0_LFN2] = ACTION_LAYER_TAP_KEY(_2L, KC_D),
+  [F0_RFN2] = ACTION_LAYER_TAP_KEY(_2R, KC_K),
+  [F0_FN3] = ACTION_LAYER_TAP_KEY(_3, KC_S),
 };
 
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
@@ -126,27 +124,29 @@ void matrix_init_user(void) {
 }
 
 void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
-    if (id == FTETRIS && record->event.pressed && !basic_is_running()) {
-        tetris_qmk_start();
-    }
-    else if (id == FHELP && record->event.pressed) {
-        SEND_STRING("http://github.com/danamlund/meckb_da26");
-    }
-    else if (id == FBASIC && record->event.pressed && !basic_is_running()) {
-        basic_start();
-    }
-    else if (id == FMINESWEEPER && record->event.pressed && !basic_is_running()) {
-        layer_on(FNMINES);
-        minesweeper_start();
-    }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        if (keycode == TETRIS && !basic_is_running()) {
+            tetris_qmk_start();
+        }
+        if (keycode == HELP) {
+            SEND_STRING("http://github.com/danamlund/meckb_da26");
+        }
+        if (keycode == BASIC && !basic_is_running()) {
+            basic_start();
+        }
+        if (keycode == MINES && !basic_is_running()) {
+            layer_on(_MINES);
+            minesweeper_start();
+        }
+    }
     if (!tetris_process_record_user(keycode, record)) {
         return false;
     }
     if (!minesweeper_process_record_user(keycode, record)) {
-            return false;
+        return false;
     }
     return true;
 }
@@ -184,16 +184,16 @@ uint32_t without_layer(uint32_t state, uint8_t layer) {
 
 uint32_t layer_state_set_user(uint32_t state) {
     // dont get stuck on layers depending on two held keys
-    if (!is_layer_on(state, FN1L)) {
-        state = without_layer(state, FN1LB);
+    if (!is_layer_on(state, _1L)) {
+        state = without_layer(state, _1LB);
     }
 
-    if (!is_layer_on(state, FN2L) && !is_layer_on(state, FN2R)) {
-        state = without_layer(state, FN2B);
+    if (!is_layer_on(state, _2L) && !is_layer_on(state, _2R)) {
+        state = without_layer(state, _2B);
     }
 
-    if (!is_layer_on(state, FN3)) {
-        state = without_layer(state, FN3B);
+    if (!is_layer_on(state, _3)) {
+        state = without_layer(state, _3B);
     }
     return state;
 }
