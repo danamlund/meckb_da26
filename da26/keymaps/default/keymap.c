@@ -17,6 +17,7 @@
 
 #include "tinybasic_qmk.h"
 #include "tetris_qmk.h"
+#include "minesweeper_qmk.h"
 
 #define ____ KC_NO
 
@@ -30,6 +31,7 @@
 #define FTETRIS 6
 #define FHELP 7
 #define FBASIC 8
+#define FMINESWEEPER 9
 
 #define FN1L 1
 #define FN1LB 2
@@ -39,6 +41,7 @@
 #define FN2B 6
 #define FN3 7
 #define FN3B 8
+#define FNMINES 9
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -86,14 +89,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_LCTL, KC_LGUI, KC_LALT, ____, ____, KC_RALT, KC_RCTL \
 ),
 [FN3] = LAYOUT(
-    KC_ESC, ____, ____, ____, F(FTETRIS), ____, ____, KC_UP, ____, ____, \
+  KC_ESC, ____, ____, ____, F(FTETRIS), ____, F(FHELP), KC_UP, ____, ____, \
     KC_LSFT, KC_TRNS, ____, MO(FN3B), ____, ____, KC_LEFT, KC_DOWN, KC_RGHT, \
-    KC_LCTL, KC_LGUI, KC_LALT, ____, F(FBASIC), KC_RALT, F(FHELP)       \
+      KC_LCTL, KC_LGUI, KC_LALT, ____, F(FBASIC), KC_RALT, F(FMINESWEEPER)       \
 ),
 [FN3B] = LAYOUT(
   ____, ____, ____, ____, ____, ____, ____, KC_PGUP, KC_INS, KC_PSCR, \
     KC_LSFT, KC_TRNS, ____, KC_TRNS, ____, ____, KC_HOME, KC_PGDN, KC_END, \
       KC_LCTL, KC_LGUI, KC_LALT, ____, ____, KC_RALT, KC_RCTL \
+),
+[FNMINES] = LAYOUT(
+    KC_ESC, ____, ____, ____, ____, ____, ____, KC_UP, ____, ____, \
+      ____, ____, KC_D, KC_F, ____, ____, KC_LEFT, KC_DOWN, KC_RGHT, \
+        ____, ____, ____, ____, ____, ____, ____  \
 ),
 };
 
@@ -106,6 +114,7 @@ const uint16_t PROGMEM fn_actions[] = {
   [FTETRIS] = ACTION_FUNCTION(FTETRIS),
   [FHELP] = ACTION_FUNCTION(FHELP),
   [FBASIC] = ACTION_FUNCTION(FBASIC),
+  [FMINESWEEPER] = ACTION_FUNCTION(FMINESWEEPER),
 };
 
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
@@ -117,20 +126,27 @@ void matrix_init_user(void) {
 }
 
 void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
-    if (id == FTETRIS && record->event.pressed && !tetris_is_running() && !basic_is_running()) {
+    if (id == FTETRIS && record->event.pressed && !basic_is_running()) {
         tetris_qmk_start();
     }
     else if (id == FHELP && record->event.pressed) {
         SEND_STRING("http://github.com/danamlund/meckb_da26");
     }
-    else if (id == FBASIC && record->event.pressed && !tetris_is_running() && !basic_is_running()) {
+    else if (id == FBASIC && record->event.pressed && !basic_is_running()) {
         basic_start();
+    }
+    else if (id == FMINESWEEPER && record->event.pressed && !basic_is_running()) {
+        layer_on(FNMINES);
+        minesweeper_start();
     }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!tetris_process_record_user(keycode, record)) {
         return false;
+    }
+    if (!minesweeper_process_record_user(keycode, record)) {
+            return false;
     }
     return true;
 }
