@@ -18,15 +18,18 @@
 #include "da_util.h"
 #include "TinyBASIC.cpp"
 
+static bool basic_inited = false;
 static bool basic_running = false;
 static bool dobreak = false;
 static bool getln_started = false;
 static bool getln_ready = false;
 
 void basic_start(void) {
+    if (!basic_inited) {
+        basic_inited = true;
+        init();
+    }
     timer = timer_read();
-    setup();
-    init();
     basic_running = true;
 }
 
