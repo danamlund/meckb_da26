@@ -77,54 +77,13 @@ void send_keycode_shift(uint16_t keycode) {
     send_keycode(LSFT(keycode));
 }
 
-// ascii to keycodes (US layout)
-uint16_t ascii_to_keycode(char c) {
-    if (c >= 'a' && c <= 'z') {
-        return KC_A + (c - 'a');
-    } else if (c >= 'A' && c <= 'Z') {
-        return LSFT((KC_A + (c - 'A')));
-    } else if (c >= '1' && c <= '9') {
-        return KC_1 + (c - '1');
-    } else {
-        switch (c) {
-        case '0': return KC_0;
-        case '\n': return KC_ENTER;
-        case ' ': return KC_SPACE;
-        case '!': return LSFT(KC_1);
-        case '"': return LSFT(KC_QUOT);
-        case '#': return LSFT(KC_3);
-        case '$': return LSFT(KC_4);
-        case '%': return LSFT(KC_5);
-        case '&': return LSFT(KC_7);
-        case '\'': return KC_QUOT;
-        case '(': return LSFT(KC_9);
-        case ')': return LSFT(KC_0);
-        case '*': return LSFT(KC_8);
-        case '+': return LSFT(KC_EQL);
-        case ',': return KC_COMM;
-        case '-': return KC_MINS;
-        case '.': return KC_DOT;
-        case '/': return KC_SLSH;
-        case ':': return LSFT(KC_SCLN);
-        case ';': return KC_SCLN;
-        case '<': return LSFT(KC_COMM);
-        case '=': return KC_EQL;
-        case '>': return LSFT(KC_DOT);
-        case '?': return LSFT(KC_SLSH);
-        case '@': return LSFT(KC_2);
-        case '[': return KC_LBRC;
-        case '\\': return KC_BSLS;
-        case ']': return KC_RBRC;
-        case '^': return LSFT(KC_6);
-        case '_': return LSFT(KC_MINS);
-        case '`': return KC_GRV;
-        case '{': return LSFT(KC_LBRC);
-        case '|': return LSFT(KC_BSLS);
-        case '}': return LSFT(KC_RBRC);
-        case '~': return LSFT(KC_GRV);
-        }
+uint16_t ascii_to_keycode(char ascii_code) {
+    uint8_t keycode = pgm_read_byte(&ascii_to_keycode_lut[(uint8_t)ascii_code]);
+    if (pgm_read_byte(&ascii_to_shift_lut[(uint8_t)ascii_code])) {
+        return LSFT(keycode);
+    } else{
+        return keycode;
     }
-    return KC_NO;
 }
 
 char keycode_to_ascii(uint16_t keycode) {
