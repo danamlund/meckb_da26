@@ -159,8 +159,8 @@ void led_set_user(uint8_t usb_led) {
 
 }
 
-bool has_bit(uint32_t state, uint8_t bit) {
-    return state & (1UL << bit);
+bool is_layer_on(uint32_t state, uint8_t layer) {
+    return state & (1UL << layer);
 }
 uint32_t without_layer(uint32_t state, uint8_t layer) {
     return state & ~(1UL << layer);
@@ -168,16 +168,16 @@ uint32_t without_layer(uint32_t state, uint8_t layer) {
 
 uint32_t layer_state_set_user(uint32_t state) {
     // dont get stuck on layers depending on two held keys
-    if (!has_bit(state, FN1L)) {
+    if (!is_layer_on(state, FN1L)) {
         state = without_layer(state, FN1LB);
     }
-    if (!has_bit(state, FN2L) && !has_bit(state, FN2R)) {
+
+    if (!is_layer_on(state, FN2L) && !is_layer_on(state, FN2R)) {
         state = without_layer(state, FN2B);
     }
-    if (!has_bit(state, FN3)) {
+
+    if (!is_layer_on(state, FN3)) {
         state = without_layer(state, FN3B);
     }
-
     return state;
 }
-
