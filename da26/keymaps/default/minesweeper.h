@@ -22,6 +22,7 @@
 
 // call
 void start(uint8_t seed);
+void quit_prematurely(void);
 
 void get_up(void);
 void get_left(void);
@@ -34,7 +35,7 @@ void get_flag_press(void);
 void send(char c);
 
 void send_newline(void);
-void send_delete(void);
+void send_insert(void);
 
 void send_up(void);
 void send_left(void);

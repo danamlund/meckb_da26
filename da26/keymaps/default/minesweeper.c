@@ -37,22 +37,22 @@ static uint8_t grid_cleared[GRID_SIZE * GRID_SIZE / 8];
 static uint8_t grid_flagged[GRID_SIZE * GRID_SIZE / 8];
 
 static void goto_xy(int x, int y) {
-  while (curx < x) {
-    send_right();
-    curx++;
-  }
-  while (curx > x) {
-    send_left();
-    curx--;
-  }
-  while (cury < y) {
-    send_down();
-    cury++;
-  }
-  while (cury > y) {
-    send_up();
-    cury--;
-  }
+    while (curx < x) {
+        send_right();
+        curx++;
+    }
+    while (curx > x) {
+        send_left();
+        curx--;
+    }
+    while (cury < y) {
+        send_down();
+        cury++;
+    }
+    while (cury > y) {
+        send_up();
+        cury--;
+    }
 }
 
 static bool has_bit(uint8_t *grid, uint8_t x, uint8_t y) {
@@ -113,7 +113,6 @@ static uint8_t xorshift8(uint8_t seed) {
 }
 
 void start(uint8_t seed) {
-
     for (int y = 0; y < GRID_SIZE; y++) {
         for (int x = 0; x < GRID_SIZE; x++) {
             set_mine(x, y, false);
@@ -137,6 +136,11 @@ void start(uint8_t seed) {
     }
 
     draw();
+    send_insert();
+}
+
+void quit_prematurely(void) {
+    send_insert();
 }
 
 void get_up(void) {
@@ -176,34 +180,52 @@ static uint8_t number(uint8_t x, uint8_t y) {
     return n;
 }
 
-static void clear_square(uint8_t x, uint8_t y) {
+static bool clear_square(uint8_t x, uint8_t y) {
     if (x < 0 || y < 0 || x >= GRID_SIZE || y >= GRID_SIZE) {
-        return;
+        return false;
     }
     if (is_cleared(x, y) || is_flagged(x, y)) {
-        return;
+        return false;
     }
     goto_xy(x, y);
     set_cleared(x, y, true);
 
-    send_delete();
     uint8_t n = number(x, y);
     if (n == 0) {
         send(' ');
         send_left();
-
-        for (int xadd = -1; xadd <= 1; xadd++) {
-            for (int yadd = -1; yadd <= 1; yadd++) {
-                clear_square(x + xadd, y + yadd);
-            }
-        }
     } else {
         send('0' + n);
         send_left();
     }
+    return true;
 }
 
-static void send_msg(const char *msg) {
+static void clear_squares_auto(void) {
+    // auto clear squares around a '0' square.
+    // slow and complicated to reduce needed call stack
+    for (int y = 0; y < GRID_SIZE; y++) {
+        for (int x = 0; x < GRID_SIZE; x++) {
+            if (is_cleared(x, y) && number(x, y) == 0) {
+                bool cleared_square = false;
+                for (int xadd = -1; xadd <= 1; xadd++) {
+                    for (int yadd = -1; yadd <= 1; yadd++) {
+                        if (clear_square(x + xadd, y + yadd)) {
+                            cleared_square = true;
+                        }
+                    }
+                }
+                if (cleared_square) {
+                    y = 0;
+                    x = 0;
+                }
+            }
+        }
+    }
+}
+
+static void end_game(const char *msg) {
+    quit_prematurely();
     goto_xy(GRID_SIZE, GRID_SIZE / 2);
     send(' ');
     while (msg[0] != '\0') {
@@ -218,11 +240,12 @@ bool get_press(void) {
     }
 
     if (is_mine(curx, cury)) {
-        send_msg("BOOM!");
+        end_game("BOOM!");
         return false;
     }
 
     clear_square(curx, cury);
+    clear_squares_auto();
 
     for (int y = 0; y < GRID_SIZE; y++) {
         for (int x = 0; x < GRID_SIZE; x++) {
@@ -235,7 +258,7 @@ bool get_press(void) {
         }
     }
 
-    send_msg("WIN!");
+    end_game("WIN!");
     return false;
 }
 
@@ -245,13 +268,10 @@ void get_flag_press(void) {
     }
     if (is_flagged(curx, cury)) {
         set_flagged(curx, cury, false);
-        send_delete();
         send('.');
-        send_left();
     } else {
         set_flagged(curx, cury, true);
-        send_delete();
         send('-');
-        send_left();
     }
+    send_left();
 }

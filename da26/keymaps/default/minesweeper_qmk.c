@@ -35,7 +35,7 @@ bool minesweeper_process_record_user(uint16_t keycode, keyrecord_t *record) {
             case KC_RIGHT: get_right(); break;
             case KC_D: if (!get_press()) { minesweeper_quit(); } break;
             case KC_F: get_flag_press(); break;
-            case KC_ESC: minesweeper_quit(); break;
+            case KC_ESC: quit_prematurely(); minesweeper_quit(); break;
             }
         }
         return false;
@@ -55,8 +55,8 @@ void send(char c) {
 void send_newline(void) {
     send_keycode(KC_ENT);
 }
-void send_delete(void) {
-    send_keycode(KC_DEL);
+void send_insert(void) {
+    send_keycode(KC_INS);
 }
 
 void send_up(void) {

@@ -27,6 +27,7 @@ static WINDOW *mainwin;
 
 static int idx = 0;
 static char area[10000] = { 0 };
+static bool insert_enabled = false;
 
 void initlog() {
   FILE *f = fopen("log.txt", "w");
@@ -207,11 +208,19 @@ void send_delete() {
   remove_space(1);
   redraw();
 }
+void send_insert() {
+    insert_enabled = !insert_enabled;
+}
 
 void send(char c) {
-  add_space(1);
-  area[idx] = c;
-  idx++;
+    if (insert_enabled) {
+        area[idx] = c;
+        idx++;
+    } else {
+        add_space(1);
+        area[idx] = c;
+        idx++;
+    }
   redraw();
 }
 
@@ -231,7 +240,7 @@ int main(int argc, char **args) {
   nodelay(mainwin, 0);
   keypad(mainwin, 1);
 
-  start(45);
+  start(0x9a);
 
   while (true) {
       bool not_lost = true;
