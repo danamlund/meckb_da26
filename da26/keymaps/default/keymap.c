@@ -25,9 +25,12 @@ enum my_keycodes {
   HELP = SAFE_RANGE,
   TETRIS,
   BASIC,
-  MINES
+  MINES,
+  DYNAMIC_MACRO_RANGE,
 };
 
+#define DYNAMIC_MACRO_SIZE 48
+#include "dynamic_macro.h"
 
 #define F0_LFN1 1
 #define F0_RFN1 2
@@ -91,7 +94,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
 [_3] = LAYOUT(
-  KC_ESC, XXXXXXX, XXXXXXX, XXXXXXX, TETRIS, XXXXXXX, HELP, KC_UP, XXXXXXX, XXXXXXX, \
+  KC_ESC, DYN_REC_START1, DYN_REC_STOP, DYN_MACRO_PLAY1, TETRIS, XXXXXXX, HELP, KC_UP, XXXXXXX, XXXXXXX, \
     KC_LSFT, KC_TRNS, XXXXXXX, MO(_3B), XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, \
       KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, BASIC, KC_RALT, MINES       \
 ),
@@ -127,6 +130,10 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!process_record_dynamic_macro(keycode, record)) {
+        return false;
+    }
+
     if (!record->event.pressed) {
         if (keycode == TETRIS && !basic_is_running()) {
             tetris_qmk_start();
