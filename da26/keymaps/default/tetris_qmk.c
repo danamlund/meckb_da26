@@ -18,7 +18,6 @@
 #include "tetris_text.h"
 #include "tetris_text.c"
 
-static uint8_t tetris_key_presses = 0;
 static bool tetris_running = false;
 static int tetris_keypress = 0;
 
@@ -26,7 +25,7 @@ void tetris_qmk_start(void) {
     timer = timer_read();
     tetris_keypress = 0;
     // set randomness using number of keys pressed
-    tetris_start(tetris_key_presses);
+    tetris_start(random_counter);
     tetris_running = true;
 }
 
@@ -35,9 +34,6 @@ bool tetris_is_running(void) {
 }
 
 bool tetris_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (record->event.pressed) {
-        tetris_key_presses++;
-    }
     if (tetris_running) {
         if (record->event.pressed) {
             tetris_keypress = 0;

@@ -60,6 +60,9 @@ void send_next_buffer(void) {
 }
 
 void da_util_matrix_scan_user(void) {
+    random_counter++;
+    // send one keycode per matrix scan to limit the time we are sending keycodes.
+    // Because we cannot detect new keypresses while sending keycodes
     send_next_buffer();
 }
 

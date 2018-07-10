@@ -18,7 +18,6 @@
 #include "minesweeper_qmk.h"
 #include "minesweeper.c"
 
-static uint8_t minesweeper_key_presses = 0;
 static bool minesweeper_running = false;
 
 static void minesweeper_quit(void) {
@@ -27,9 +26,6 @@ static void minesweeper_quit(void) {
 }
 
 bool minesweeper_process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (record->event.pressed) {
-        minesweeper_key_presses++;
-    }
     if (minesweeper_running) {
         if (record->event.pressed) {
             switch (keycode) {
@@ -49,7 +45,7 @@ bool minesweeper_process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 void minesweeper_start(void) {
     minesweeper_running = true;
-    start(minesweeper_key_presses);
+    start(random_counter);
 }
 
 void send(char c) {

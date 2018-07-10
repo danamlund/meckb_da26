@@ -22,6 +22,7 @@
 #define BUFFER_SIZE 16
 
 uint16_t timer;
+uint8_t random_counter;
 
 // call this
 void da_util_matrix_scan_user(void);

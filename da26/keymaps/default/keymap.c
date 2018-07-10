@@ -164,7 +164,6 @@ bool unregister_code_user(uint8_t code) {
     return true;
 }
 
-
 void matrix_scan_user(void) {
     da_util_matrix_scan_user();
     tetris_matrix_scan_user();
