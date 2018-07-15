@@ -26,6 +26,7 @@ enum my_keycodes {
   TETRIS,
   BASIC,
   MINES,
+  QUICKCALC,
   DYNAMIC_MACRO_RANGE,
 };
 
@@ -94,7 +95,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
 [_3] = LAYOUT(
-  KC_ESC, DYN_REC_START1, DYN_REC_STOP, DYN_MACRO_PLAY1, TETRIS, XXXXXXX, HELP, KC_UP, XXXXXXX, XXXXXXX, \
+  QUICKCALC, DYN_REC_START1, DYN_REC_STOP, DYN_MACRO_PLAY1, TETRIS, XXXXXXX, HELP, KC_UP, XXXXXXX, XXXXXXX, \
     KC_LSFT, KC_TRNS, XXXXXXX, MO(_3B), XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, \
       KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, BASIC, KC_RALT, MINES       \
 ),
@@ -147,6 +148,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (keycode == MINES && !basic_is_running()) {
             layer_on(_MINES);
             minesweeper_start();
+        }
+        if (keycode == QUICKCALC && !basic_is_running()) {
+            basic_quickcalc();
         }
     }
     if (!tetris_process_record_user(keycode, record)) {

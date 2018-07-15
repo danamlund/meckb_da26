@@ -27,4 +27,6 @@ void basic_start(void);
 
 bool basic_is_running(void);
 
+void basic_quickcalc(void);
+
 #endif

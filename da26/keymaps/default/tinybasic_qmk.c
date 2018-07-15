@@ -23,6 +23,7 @@ static bool basic_running = false;
 static bool dobreak = false;
 static bool getln_started = false;
 static bool getln_ready = false;
+static uint8_t quickcalc = 0;
 
 void basic_start(void) {
     if (!basic_inited) {
@@ -31,6 +32,14 @@ void basic_start(void) {
     }
     timer = timer_read();
     basic_running = true;
+}
+
+void basic_quickcalc(void) {
+    quickcalc = 1;
+    basic_start();
+    loop();
+    txtpos[0] = '?';
+    txtpos++;
 }
 
 bool basic_is_running(void) {
@@ -42,7 +51,7 @@ bool basic_register_code_user(uint8_t code) {
         return true;
     }
 
-    /* do basic checks here and not process_record_user so we dont have 
+    /* do basic checks here and not process_record_user so we dont have
        to parse layers to see which keycode is actually being typed. */
     if (basic_running) {
         if (isrunning()) {
@@ -58,6 +67,19 @@ bool basic_register_code_user(uint8_t code) {
             if (code == KC_ENT) {
                 txtpos[0] = NL;
                 getln_ready = true;
+
+                if (quickcalc) {
+                    SEND_STRING(" = ");
+                    quickcalc = 2;
+                    loop();
+                    loop();
+                    quickcalc = 0;
+                    basic_running = false;
+                    txtpos[0] = NL;
+                    getln_ready = true;
+                    return false;
+                }
+
                 return true;
             } else if (code == KC_BSPC) {
                 if (txtpos > program_end+sizeof(LINENUM)) {
@@ -110,7 +132,9 @@ void basic_matrix_scan_user(void) {
 }
 
 void outchar(unsigned char c) {
-    send_keycode(ascii_to_keycode(c));
+    if (!quickcalc || (quickcalc == 2 && (c == '.' || (c >= '0' && c <= '9')))) {
+        send_keycode(ascii_to_keycode(c));
+    }
 }
 
 unsigned char breakcheck(void) {
