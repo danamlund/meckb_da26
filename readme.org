@@ -45,7 +45,8 @@ A 26-key keyboard with 3d printed case and [[https://github.com/qmk/qmk_firmware
  - Type 'bye' to quit
  - Ignores movement keys except for backspace
  - Uses US layout
- - 1024 bytes memory
+ - 1024 bytes memory (866 free after reserved variable storage)
+ - all numbers are float
  - Executes 1 instruction per 50 ms
  - When typed keys stop working you are out of memory
  - Type 'mem' to see memory left

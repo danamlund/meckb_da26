@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ncurses.h>
+#include <math.h>
 
 #include "TinyBASIC.cpp"
 

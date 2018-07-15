@@ -104,7 +104,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-
 // IF testing with Visual C
 //#include "stdafx.h"
 char eliminateCompileErrors = 1;
@@ -145,6 +144,9 @@ char eliminateCompileErrors = 1;
   #define kRamSize   4096
 
 #endif
+
+int isinf(double f);
+int isnan(double f);
 
 // ASCII Characters
 #define CR		'\r'
@@ -275,7 +277,7 @@ static unsigned char relop_tab[] = {
 #define RELOP_UNKNOWN	6
 
 #define STACK_SIZE (sizeof(struct stack_for_frame)*5)
-#define VAR_SIZE sizeof(int32_t) // Size of variables in bytes
+#define VAR_SIZE sizeof(float) // Size of variables in bytes
 
 static unsigned char *stack_limit;
 static unsigned char *program_start;
@@ -308,7 +310,7 @@ static const unsigned char minvalue[]        = "-2147483648";
 /* int inchar(void); */
 void outchar(unsigned char c);
 static void line_terminator(void);
-static int32_t expression(void);
+static float expression(void);
 unsigned char breakcheck(void);
 bool getln_isstarted(void);
 bool getln_isready(void);
@@ -362,50 +364,65 @@ static void scantable(unsigned char *table)
         }
 }
 
-/***************************************************************************/
-static void pushb(unsigned char b)
-{
-        sp--;
-        *sp = b;
-}
-
-/***************************************************************************/
-static unsigned char popb(void)
-{
-        unsigned char b;
-        b = *sp;
-        sp++;
-        return b;
-}
 
 /***************************************************************************/
 static void printmsgNoNL(const unsigned char *msg);
-static void printnum(int32_t num)
+static void printnum(float num)
 {
-        int digits = 0;
+    // if (isinf(num) < 0) {
+    //     outchar('-');
+    // }
+    if (isinf(num)) {
+        if (num < 0) {
+        outchar('-');
+        }
+        outchar('I');
+        outchar('n');
+        outchar('f');
+        return;
+    }
+    if (isnan(num)) {
+        outchar('N');
+        outchar('a');
+        outchar('N');
+        return;
+    }
+    if(num < 0) {
+        num = -num;
+        outchar('-');
+    }
 
-        if (num == (int32_t) -2147483648) {
-            printmsgNoNL(minvalue);
-            return;
-        }
-        if(num < 0)
-        {
-                num = -num;
-                outchar('-');
-        }
+    float div = 1.0f;
+    while (num / div >= 10.0f) {
+        div *= 10.0f;
+    }
 
-        do {
-                pushb(num%10+'0');
-                num = num/10;
-                digits++;
-        }
-        while (num > 0);
+    float gtzero = 0.0f;
+    while (div >= 1.0f) {
+        uint8_t digit = ((uint32_t) (num / div) % 10);
+        outchar('0' + digit);
+        gtzero += digit * div;
+        div /= 10.0f;
+    }
 
-        while(digits > 0)
-        {
-                outchar(popb());
-                digits--;
+    uint8_t decimals = 0;
+    div = 10;
+    for (uint8_t i = 1; i < 7; i++) {
+        uint8_t digit = (uint32_t) (num * div) % 10;
+        if (digit >= 1) {
+            decimals = i;
         }
+        div *= 10;
+    }
+
+    if (decimals >= 1) {
+        outchar('.');
+        div = 10;
+        for (uint8_t i = 0; i < decimals; i++) {
+            outchar('0' + ((uint32_t) (num * div) % 10));
+            div *= 10;
+        }
+    }
 }
 /***************************************************************************/
 static unsigned short testnum(void)
@@ -570,32 +587,37 @@ void printline(void)
 }
 
 /***************************************************************************/
-static int32_t expr4(void)
+static float expr4(void)
 {
-        if(*txtpos == '0')
-        {
+    if ((*txtpos >= '0' && *txtpos <= '9') || *txtpos == '.') {
+        float a = 0;
+        if (*txtpos != '.') {
+            do {
+                a = a*10 + *txtpos - '0';
                 txtpos++;
-                return 0;
+            } while (*txtpos >= '0' && *txtpos <= '9');
         }
 
-        if(*txtpos >= '1' && *txtpos <= '9')
-        {
-                int32_t a = 0;
-                do      {
-                        a = a*10 + *txtpos - '0';
-                        txtpos++;
-                } while(*txtpos >= '0' && *txtpos <= '9');
-                return a;
+        if (*txtpos == '.') {
+            txtpos++;
+            float div = 10;
+            while (*txtpos >= '0' && *txtpos <= '9') {
+                a += (*txtpos - '0') / div;
+                txtpos++;
+                div *= 10;
+            }
         }
+        return a;
+    }
 
         // Is it a function or variable reference?
         if(txtpos[0] >= 'A' && txtpos[0] <= 'Z')
         {
-                int32_t a;
+                float a;
                 // Is it a variable reference (single alpha)
                 if(txtpos[1] < 'A' || txtpos[1] > 'Z')
                 {
-                        a = ((int32_t *)variables_begin)[*txtpos - 'A'];
+                        a = ((float *)variables_begin)[*txtpos - 'A'];
                         txtpos++;
                         return a;
                 }
@@ -618,7 +640,7 @@ static int32_t expr4(void)
                 switch(f)
                 {
                         case FUNC_PEEK:
-                                return program[a];
+                            return program[(int16_t) a];
                         case FUNC_ABS:
                                 if(a < 0)
                                         return -a;
@@ -628,7 +650,7 @@ static int32_t expr4(void)
 
         if(*txtpos == '(')
         {
-                int32_t a;
+                float a;
                 txtpos++;
                 a = expression();
                 if(*txtpos != ')')
@@ -645,9 +667,9 @@ expr4_error:
 }
 
 /***************************************************************************/
-static int32_t expr3(void)
+static float expr3(void)
 {
-        int32_t a,b;
+        float a,b;
 
         a = expr4();
         while(1)
@@ -662,10 +684,7 @@ static int32_t expr3(void)
                 {
                         txtpos++;
                         b = expr4();
-                        if(b != 0)
-                                a /= b;
-                        else
-                                expression_error = 1;
+                        a /= b;
                 }
                 else if(*txtpos == '^')
                 {
@@ -674,7 +693,7 @@ static int32_t expr3(void)
                     if (b < 0)
                         a = 0;
                     else {
-                        int32_t result = 1;
+                        float result = 1;
                         while (b-- > 0)
                             result *= a;
                         a = result;
@@ -686,9 +705,9 @@ static int32_t expr3(void)
 }
 
 /***************************************************************************/
-static int32_t expr2(void)
+static float expr2(void)
 {
-        int32_t a,b;
+        float a,b;
 
         if(*txtpos == '-' || *txtpos == '+')
                 a = 0;
@@ -714,9 +733,9 @@ static int32_t expr2(void)
         }
 }
 /***************************************************************************/
-static int32_t expression(void)
+static float expression(void)
 {
-        int32_t a,b;
+        float a,b;
 
         a = expr2();
         // Check if we have an error
@@ -763,7 +782,6 @@ static unsigned char linelen;
 void init(void) {
         program_start = program;
         program_end = program_start;
-        sp = program+sizeof(program);  // Needed for printnum
         stack_limit = program+sizeof(program)-STACK_SIZE;
         variables_begin = stack_limit - 27*VAR_SIZE;
         printmsg(initmsg);
@@ -771,7 +789,6 @@ void init(void) {
         printmsg(memorymsg);
 
         current_line = 0;
-        sp = program+sizeof(program);
         printmsg(okmsg);
 }
 
@@ -991,7 +1008,7 @@ interperateAtTxtpos2:
                         goto assignment;
                 case KW_IF:
                 {
-                        int32_t val;
+                        float val;
                         expression_error = 0;
                         val = expression();
                         if(expression_error || *txtpos == NL)
@@ -1061,7 +1078,7 @@ input:
                 ignore_blanks();
                 if(*txtpos != NL && *txtpos != ':')
                         goto qwhat;
-                ((int32_t *)variables_begin)[var-'A'] = 99;
+                ((float *)variables_begin)[var-'A'] = 99;
 
                 goto run_next_statement;
         }
@@ -1115,7 +1132,7 @@ forloop:
 
                         sp -= sizeof(struct stack_for_frame);
                         f = (struct stack_for_frame *)sp;
-                        ((int32_t *)variables_begin)[var-'A'] = initial;
+                        ((float *)variables_begin)[var-'A'] = initial;
                         f->frame_type = STACK_FOR_FLAG;
                         f->for_var = var;
                         f->terminal = terminal;
@@ -1183,7 +1200,7 @@ gosub_return:
                                         // Is the the variable we are looking for?
                                         if(txtpos[-1] == f->for_var)
                                         {
-                                                int32_t *varaddr = ((int32_t *)variables_begin) + txtpos[-1] - 'A';
+                                                float *varaddr = ((float *)variables_begin) + txtpos[-1] - 'A';
                                                 *varaddr = *varaddr + f->step;
                                                 // Use a different test depending on the sign of the step increment
                                                 if((f->step > 0 && *varaddr <= f->terminal) || (f->step < 0 && *varaddr >= f->terminal))
@@ -1211,12 +1228,12 @@ gosub_return:
 
 assignment:
         {
-                int32_t value;
-                int32_t *var;
+                float value;
+                float *var;
 
                 if(*txtpos < 'A' || *txtpos > 'Z')
                         goto qhow;
-                var = (int32_t *)variables_begin + *txtpos - 'A';
+                var = (float *)variables_begin + *txtpos - 'A';
                 txtpos++;
 
                 ignore_blanks();
@@ -1303,7 +1320,7 @@ print:
                         goto qwhat;
                 else
                 {
-                        int32_t e;
+                        float e;
                         expression_error = 0;
                         e = expression();
                         if(expression_error)
