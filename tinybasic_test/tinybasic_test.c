@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <ncurses.h>
 
-#include "tinybasic03.c"
+#include "TinyBASIC.cpp"
 
 #define ESC 27
+
+int kbhit(void);
+void getln_addch(int c);
 
 int main(int argc, char **args) {
     initscr();
