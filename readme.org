@@ -51,7 +51,7 @@ A 26-key keyboard with 3d printed case and [[https://github.com/qmk/qmk_firmware
  - When typed keys stop working you are out of memory
  - Type 'mem' to see memory left
  - ncurses version in tinybasic_test/
- - quick calc calls basic prepended with '?'
+ - quick calc calls basic, stores result in a, and prints it
 
 * keyboard-layout-editor.com
  - http://www.keyboard-layout-editor.com
