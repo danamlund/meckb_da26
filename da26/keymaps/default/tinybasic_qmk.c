@@ -132,7 +132,7 @@ void basic_matrix_scan_user(void) {
 }
 
 void outchar(unsigned char c) {
-    if (!quickcalc || (quickcalc == 2 && (c == '.' || (c >= '0' && c <= '9')))) {
+    if (!quickcalc || (quickcalc == 2 && (c != '\n' && c != '>'))) {
         send_keycode(ascii_to_keycode(c));
     }
 }
