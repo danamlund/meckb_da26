@@ -271,7 +271,7 @@ void get_flag_press(void) {
         send('.');
     } else {
         set_flagged(curx, cury, true);
-        send('-');
+        send('*');
     }
     send_left();
 }
