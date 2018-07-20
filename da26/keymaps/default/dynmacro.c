@@ -49,7 +49,7 @@ void dynmacro_replay() {
 
 bool dynmacro_register_code_user(uint8_t code) {
     if (state == DYNMACRO_STATE_RECORD) {
-        if (IS_MOD(code)) {
+        if (IS_MOD(code) || code == KC_NO) {
             return true;
         }
         if (index >= DYNMACRO_BUFFER - 1) {
@@ -71,8 +71,6 @@ void dynmacro_matrix_scan_user(void) {
     }
     if (state == DYNMACRO_STATE_REPLAY) {
         if (codes[index] == KC_NO) {
-            set_mods(0);
-            send_keyboard_report();
             state = DYNMACRO_STATE_IDLE;
             index = 0;
         } else {
@@ -80,6 +78,8 @@ void dynmacro_matrix_scan_user(void) {
             send_keyboard_report();
             register_code(codes[index]);
             unregister_code(codes[index]);
+            set_mods(0);
+            send_keyboard_report();
             index++;
         }
     }
