@@ -18,6 +18,10 @@
 #include "tinybasic_qmk.h"
 #include "tetris_qmk.h"
 #include "minesweeper_qmk.h"
+#include "dynmacro.h"
+
+#undef DYNMACRO_BUFFER
+#define DYNMACRO_BUFFER 256
 
 #define PREVENT_STUCK_MODIFIERS
 
@@ -27,11 +31,10 @@ enum my_keycodes {
   BASIC,
   MINES,
   QUICKCALC,
-  DYNAMIC_MACRO_RANGE,
+  DYNMACRO_RECORD,
+  DYNMACRO_STOP,
+  DYNMACRO_REPLAY,
 };
-
-#define DYNAMIC_MACRO_SIZE 48
-#include "dynamic_macro.h"
 
 #define F0_LFN1 1
 #define F0_RFN1 2
@@ -95,7 +98,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
 [_3] = LAYOUT(
-  QUICKCALC, DYN_REC_START1, DYN_REC_STOP, DYN_MACRO_PLAY1, TETRIS, XXXXXXX, HELP, KC_UP, XXXXXXX, XXXXXXX, \
+  QUICKCALC, DYNMACRO_RECORD, DYNMACRO_STOP, DYNMACRO_REPLAY, TETRIS, XXXXXXX, HELP, KC_UP, XXXXXXX, XXXXXXX, \
     KC_LSFT, KC_TRNS, XXXXXXX, MO(_3B), XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, \
       KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, BASIC, KC_RALT, MINES       \
 ),
@@ -131,10 +134,6 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!process_record_dynamic_macro(keycode, record)) {
-        return false;
-    }
-
     if (!record->event.pressed) {
         if (keycode == TETRIS && !basic_is_running()) {
             tetris_qmk_start();
@@ -152,6 +151,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (keycode == QUICKCALC && !basic_is_running()) {
             basic_quickcalc();
         }
+        if (keycode == DYNMACRO_RECORD) {
+            dynmacro_record();
+        }
+        if (keycode == DYNMACRO_STOP) {
+            dynmacro_stop();
+        }
+        if (keycode == DYNMACRO_REPLAY) {
+            dynmacro_replay();
+        }
     }
     if (!tetris_process_record_user(keycode, record)) {
         return false;
@@ -167,6 +175,9 @@ bool register_code_user(uint8_t code) {
     if (!basic_register_code_user(code)) {
         return false;
     }
+    if (!dynmacro_register_code_user(code)) {
+        return false;
+    }
     return true;
 }
 
@@ -179,6 +190,7 @@ void matrix_scan_user(void) {
     da_util_matrix_scan_user();
     tetris_matrix_scan_user();
     basic_matrix_scan_user();
+    dynmacro_matrix_scan_user();
 }
 
 void led_set_user(uint8_t usb_led) {
