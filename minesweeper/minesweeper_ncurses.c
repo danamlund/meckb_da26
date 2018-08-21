@@ -240,7 +240,9 @@ int main(int argc, char **args) {
   nodelay(mainwin, 0);
   keypad(mainwin, 1);
 
-  start(0x9a);
+  //start(0x9a);
+  srand(time(NULL));
+  start(random() & 0xFF);
 
   while (true) {
       bool not_lost = true;
