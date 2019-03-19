@@ -20,6 +20,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <curses.h>
+#include <sys/time.h>
 
 #include "minesweeper.h"
 
@@ -213,7 +214,7 @@ void send_insert() {
 }
 
 void send(char c) {
-    if (insert_enabled) {
+    if (insert_enabled && area[idx] != '\n') {
         area[idx] = c;
         idx++;
     } else {
@@ -226,6 +227,12 @@ void send(char c) {
 
 void send_newline() {
   send('\n');
+}
+
+uint32_t timer_read32() {
+    struct timeval t;
+    gettimeofday(&t, NULL);
+    return t.tv_usec / 1000 + t.tv_sec * 1000;
 }
 
 int main(int argc, char **args) {
@@ -253,6 +260,7 @@ int main(int argc, char **args) {
       case KEY_RIGHT: get_right(); break;
       case 'd': not_lost = get_press(); break;
       case 'f': get_flag_press(); break;
+      case 'l': get_print_mines_left(); break;
       case 'q': goto loop; // quit
       }
       if (!not_lost) {
