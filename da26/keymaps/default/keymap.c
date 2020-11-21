@@ -19,6 +19,7 @@
 #include "tetris_qmk.h"
 #include "minesweeper_qmk.h"
 #include "dynmacro.h"
+#include "sudoku_qmk.h"
 
 #undef DYNMACRO_BUFFER
 #define DYNMACRO_BUFFER 256
@@ -30,6 +31,7 @@ enum my_keycodes {
   TETRIS,
   BASIC,
   MINES,
+  SUDOKU,
   QUICKCALC,
   DYNMACRO_RECORD,
   DYNMACRO_STOP,
@@ -98,7 +100,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, XXXXXXX, KC_RALT, KC_RCTL \
 ),
 [_3] = LAYOUT(
-  QUICKCALC, DYNMACRO_RECORD, DYNMACRO_STOP, DYNMACRO_REPLAY, TETRIS, XXXXXXX, HELP, KC_UP, XXXXXXX, XXXXXXX, \
+  QUICKCALC, DYNMACRO_RECORD, DYNMACRO_STOP, DYNMACRO_REPLAY, TETRIS, XXXXXXX, HELP, KC_UP, SUDOKU, XXXXXXX, \
     KC_LSFT, KC_TRNS, XXXXXXX, MO(_3B), XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, \
       KC_LCTL, KC_LGUI, KC_LALT, XXXXXXX, BASIC, KC_RALT, MINES       \
 ),
@@ -111,7 +113,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, XXXXXXX, XXXXXXX, \
       XXXXXXX, XXXXXXX, KC_D,  KC_F,  KC_L, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, \
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  \
-),
+)
 };
 
 const uint16_t PROGMEM fn_actions[] = {
@@ -136,6 +138,7 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) {
         if (keycode == TETRIS && !basic_is_running()) {
+            layer_on(_MINES);
             tetris_qmk_start();
         }
         if (keycode == HELP) {
@@ -150,6 +153,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         if (keycode == QUICKCALC && !basic_is_running()) {
             basic_quickcalc();
+        }
+        if (keycode == SUDOKU && !basic_is_running()) {
+            sudoku_start();
         }
         if (keycode == DYNMACRO_RECORD) {
             dynmacro_record();
@@ -176,6 +182,9 @@ bool register_code_user(uint8_t code) {
         return false;
     }
     if (!dynmacro_register_code_user(code)) {
+        return false;
+    }
+    if (!sudoku_register_code_user(code)) {
         return false;
     }
     return true;

@@ -112,6 +112,7 @@ char eliminateCompileErrors = 1;
 
 // 19k if SD Card library is included, otherwise just 10k
 #define ENABLE_FILEIO 0
+#define ENABLE_GOSUB 0
 
 #if ARDUINO
   // includes for Arduino functionality
@@ -126,7 +127,8 @@ char eliminateCompileErrors = 1;
   #endif
 
   // size of our program ram
-  #define kRamSize   1024
+  //#define kRamSize   1024
+  #define kRamSize   512
 
   // for file writing
   #if ENABLE_FILEIO
@@ -172,7 +174,9 @@ typedef short unsigned LINENUM;
 static unsigned char program[kRamSize];
 static unsigned char *txtpos,*list_line;
 static unsigned char expression_error;
+#if ENABLE_GOSUB
 static unsigned char *tempsp;
+#endif
 
 /***********************************************************/
 // Keyword table and constants - the last character has 0x80 added to it
@@ -1145,6 +1149,7 @@ forloop:
         goto qhow;
 
 gosub:
+#if ENABLE_GOSUB
         expression_error = 0;
         linenum = expression();
         if(!expression_error && *txtpos == NL)
@@ -1162,6 +1167,9 @@ gosub:
                 goto execline;
         }
         goto qhow;
+#else
+        goto unimplemented;
+#endif
 
 next:
         // Fnd the variable name
@@ -1174,6 +1182,7 @@ next:
                 goto qwhat;
 
 gosub_return:
+#if ENABLE_GOSUB
         // Now walk up the stack frames and find the frame we want, if present
         tempsp = sp;
         while(tempsp < program+sizeof(program)-1)
@@ -1225,7 +1234,10 @@ gosub_return:
         }
         // Didn't find the variable we've been looking for
         goto qhow;
-
+#else
+        goto unimplemented;
+#endif
+        
 assignment:
         {
                 float value;
